@@ -4,7 +4,6 @@
     "slug": "flexi",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "scheme": "flexi",
@@ -29,9 +28,18 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-secure-store"
-    ]
+    "fonts": [
+      "./assets/fonts/Pretendard-Bold.ttf",
+      "./assets/fonts/Pretendard-ExtraBold.ttf",
+      "./assets/fonts/Pretendard-Medium.ttf",
+      "./assets/fonts/Pretendard-Regular.ttf",
+      "./assets/fonts/Pretendard-SemiBold.ttf",
+      "./assets/fonts/Urbanist-Bold.ttf",
+      "./assets/fonts/Urbanist-ExtraBold.ttf",
+      "./assets/fonts/Urbanist-Medium.ttf",
+      "./assets/fonts/Urbanist-Regular.ttf",
+      "./assets/fonts/Urbanist-SemiBold.ttf"
+    ],
+    "plugins": ["expo-router", "expo-secure-store"]
   }
 }
