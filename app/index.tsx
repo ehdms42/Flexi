@@ -1,16 +1,17 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-import { useRouter } from "expo-router";
+import * as SecureStore from 'expo-secure-store';
+import { useRouter } from 'expo-router';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   Easing,
   runOnJS,
-} from "react-native-reanimated";
-import { View, Image, Dimensions } from "react-native";
+} from 'react-native-reanimated';
+import { View, Image, Dimensions } from 'react-native';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 
 export default function SplashScreen() {
   const router = useRouter();
@@ -25,39 +26,38 @@ export default function SplashScreen() {
     ],
   }));
 
-  const goToHome = () => {
-    router.replace("/(app)");
+  const goToNext = async () => {
+    const token = await SecureStore.getItemAsync('accessToken');
+    if (token) {
+      router.replace('/(app)');
+    } else {
+      router.replace('/(auth)/login');
+    }
   };
 
   useEffect(() => {
     translateX.value = withTiming(0, {
-      duration: 1500,
+      duration: 2000,
       easing: Easing.out(Easing.exp),
     });
-    rotate.value = withTiming(
-      360,
-      {
-        duration: 2000,
-        easing: Easing.out(Easing.exp),
-      },
-      () => {
-        runOnJS(goToHome)();
-      }
-    );
+    rotate.value = withTiming(360, {
+      duration: 2000,
+      easing: Easing.out(Easing.exp),
+    }, () => {
+      runOnJS(goToNext)();
+    });
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "#F5F3F1",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+    <View style={{
+      flex: 1,
+      backgroundColor: '#F5F3F1',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
       <Animated.View style={animatedStyle}>
         <Image
-          source={require("../assets/icons/icon.png")}
+          source={require('../assets/icons/icon.png')}
           style={{ width: 120, height: 120 }}
           resizeMode="contain"
         />
