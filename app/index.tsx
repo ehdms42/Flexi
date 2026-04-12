@@ -9,7 +9,9 @@ import Animated, {
   Easing,
   runOnJS,
 } from 'react-native-reanimated';
-import { View, Image, Dimensions } from 'react-native';
+import { View, Dimensions } from 'react-native';
+
+import Logo from '../assets/icons/logo.svg';
 
 const { width } = Dimensions.get('window');
 
@@ -56,11 +58,7 @@ export default function SplashScreen() {
       justifyContent: 'center',
     }}>
       <Animated.View style={animatedStyle}>
-        <Image
-          source={require('../assets/icons/icon.png')}
-          style={{ width: 120, height: 120 }}
-          resizeMode="contain"
-        />
+        <Logo width={120} height={120} />
       </Animated.View>
     </View>
   );
