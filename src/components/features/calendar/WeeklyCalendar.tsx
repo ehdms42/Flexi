@@ -2,13 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 import { colors } from "@constants/colors";
 import { fontFamily } from "@constants/typography";
-
-const DAYS = ["월", "화", "수", "목", "금", "토", "일"];
-
-interface WeekDay {
-  date: number;
-  day: string;
-}
+import { WeekDay } from "@/types/schedule";
 
 interface WeeklyCalendarProps {
   selectedDate: number;

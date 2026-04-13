@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import { colors } from "@constants/colors";
 import { fontFamily } from "@constants/typography";
+import { CategoryType, Priority } from "@/types/schedule";
 import StarRed from "@assets/icons/star-red.svg";
 import StarOrange from "@assets/icons/star-orange.svg";
 import StarYellow from "@assets/icons/star-yellow.svg";
@@ -12,10 +13,10 @@ import CategoryPersonal from "@assets/icons/category-personal.svg";
 interface ScheduleCardProps {
   title: string;
   category: string;
-  categoryType: "work" | "personal";
+  categoryType: CategoryType;
   startTime: string;
   endTime: string;
-  priority: "red" | "orange" | "yellow" | "green";
+  priority: Priority;
   onPress?: () => void;
 }
 

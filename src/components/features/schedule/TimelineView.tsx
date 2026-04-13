@@ -2,20 +2,21 @@ import { View, Text, StyleSheet } from "react-native";
 
 import { colors } from "@constants/colors";
 import { fontFamily } from "@constants/typography";
+import { Schedule } from "@/types/schedule";
 import ScheduleCard from "./ScheduleCard";
 
-const HOURS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM"];
+const TIMELINE_START_HOUR = 9;
+const TIMELINE_END_HOUR = 12;
 
-interface Schedule {
-  id: string;
-  title: string;
-  category: string;
-  categoryType: "work" | "personal";
-  startTime: string;
-  endTime: string;
-  hour: number;
-  priority: "red" | "orange" | "yellow" | "green";
-}
+const HOURS = Array.from(
+  { length: TIMELINE_END_HOUR - TIMELINE_START_HOUR + 1 },
+  (_, i) => {
+    const h = TIMELINE_START_HOUR + i;
+    const period = h < 12 ? "AM" : "PM";
+    const display = h > 12 ? h - 12 : h;
+    return { label: `${display}:00 ${period}`, hour: h };
+  }
+);
 
 interface TimelineViewProps {
   schedules: Schedule[];
@@ -24,12 +25,12 @@ interface TimelineViewProps {
 export default function TimelineView({ schedules }: TimelineViewProps) {
   return (
     <View style={styles.container}>
-      {HOURS.map((hour, index) => {
-        const hourSchedules = schedules.filter((s) => s.hour === index + 9);
+      {HOURS.map(({ label, hour }) => {
+        const hourSchedules = schedules.filter((s) => s.hour === hour);
         return (
-          <View key={hour} style={styles.row}>
+          <View key={label} style={styles.row}>
             <View style={styles.hourRow}>
-              <Text style={styles.hourText}>{hour}</Text>
+              <Text style={styles.hourText}>{label}</Text>
               <View style={styles.line} />
             </View>
             {hourSchedules.map((schedule) => (
