@@ -11,7 +11,8 @@
       "@components/*": ["src/components/*"],
       "@types/*": ["src/types/*"],
       "@constants/*": ["src/constants/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@assets/*": ["assets/*"]
     }
   }
 }
