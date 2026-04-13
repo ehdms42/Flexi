@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -6,34 +6,36 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-} from "react-native";
+} from 'react-native';
 
-import { useRouter } from "expo-router";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-} from "react-native-reanimated";
+} from 'react-native-reanimated';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import Menu from "@assets/icons/menu.svg";
-import Bell from "@assets/icons/bell.svg";
-import ChevronDown from "@assets/icons/chevron-down.svg";
-import FloatingPlus from "@assets/icons/floating-plus.svg";
-import FloatingClose from "@assets/icons/floating-close.svg";
-import EditIcon from "@assets/icons/edit.svg";
-import NewPlan from "@assets/icons/new-plan.svg";
+import Menu from '@assets/icons/menu.svg';
+import Bell from '@assets/icons/bell.svg';
+import ChevronDown from '@assets/icons/chevron-down.svg';
+import FloatingPlus from '@assets/icons/floating-plus.svg';
+import FloatingClose from '@assets/icons/floating-close.svg';
+import EditIcon from '@assets/icons/edit.svg';
+import NewPlan from '@assets/icons/new-plan.svg';
 
-import WeeklyCalendar from "@components/features/calendar/WeeklyCalendar";
-import TimelineView from "@components/features/schedule/TimelineView";
-import { colors } from "@constants/colors";
-import { fontFamily, typography } from "@constants/typography";
-import { MOCK_WEEK_DATES, MOCK_SCHEDULES } from "@/mocks/schedule";
+import WeeklyCalendar from '@components/features/calendar/WeeklyCalendar';
+import TimelineView from '@components/features/schedule/TimelineView';
+import NewScheduleSheet from '@components/features/schedule/NewScheduleSheet';
+import { colors } from '@constants/colors';
+import { fontFamily, typography } from '@constants/typography';
+import { MOCK_WEEK_DATES, MOCK_SCHEDULES } from '@/mocks/schedule';
 
 export default function HomeScreen() {
-  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(17);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const newScheduleSheetRef = useRef<BottomSheet>(null);
 
   const opacity = useSharedValue(0);
 
@@ -54,73 +56,88 @@ export default function HomeScreen() {
     }
   };
 
+  const openNewSchedule = () => {
+    toggleMenu();
+    newScheduleSheetRef.current?.expand();
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* 헤더 */}
-        <View style={styles.header}>
-          <Menu width={42} height={42} />
-          <View style={styles.headerRight}>
-            <Bell width={42} height={42} />
-            <View style={styles.profileCircle} />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {/* 헤더 */}
+          <View style={styles.header}>
+            <Menu width={42} height={42} />
+            <View style={styles.headerRight}>
+              <Bell width={42} height={42} />
+              <View style={styles.profileCircle} />
+            </View>
           </View>
-        </View>
 
-        {/* April + 지연 텍스트 */}
-        <View style={styles.monthArea}>
-          <View style={styles.monthRow}>
-            <Text style={styles.monthText}>April</Text>
-            <ChevronDown width={20} height={20} />
+          {/* April + 지연 텍스트 */}
+          <View style={styles.monthArea}>
+            <View style={styles.monthRow}>
+              <Text style={styles.monthText}>April</Text>
+              <ChevronDown width={20} height={20} />
+            </View>
+            <Text style={styles.delayText}>
+              오늘 일정 중 <Text style={styles.delayHighlight}>0건이 지연</Text>된
+              걸로 확인됐어요.
+            </Text>
           </View>
-          <Text style={styles.delayText}>
-            오늘 일정 중 <Text style={styles.delayHighlight}>0건이 지연</Text>된
-            걸로 확인됐어요.
-          </Text>
-        </View>
 
-        {/* 주간 캘린더 */}
-        <WeeklyCalendar
-          selectedDate={selectedDate}
-          onSelectDate={setSelectedDate}
-          weekDates={MOCK_WEEK_DATES}
-        />
+          {/* 주간 캘린더 */}
+          <WeeklyCalendar
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+            weekDates={MOCK_WEEK_DATES}
+          />
 
-        {/* 타임라인 */}
-        <TimelineView schedules={MOCK_SCHEDULES} />
-      </ScrollView>
+          {/* 타임라인 */}
+          <TimelineView schedules={MOCK_SCHEDULES} />
+        </ScrollView>
 
-      {/* 딤 배경 */}
-      {isMenuOpen && (
-        <Animated.View style={[styles.dim, dimStyle]} onTouchEnd={toggleMenu} />
-      )}
-
-      {/* 플로팅 버튼 */}
-      <View style={styles.floatingContainer}>
+        {/* 딤 배경 */}
         {isMenuOpen && (
-          <View style={styles.floatingMenu}>
-            <View style={styles.floatingMenuItem}>
-              <Text style={styles.floatingMenuText}>일정 변경</Text>
-              <TouchableOpacity style={styles.floatingMenuBtn}>
-                <EditIcon width={59} height={59} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.floatingMenuItem}>
-              <Text style={styles.floatingMenuText}>새 일정</Text>
-              <TouchableOpacity style={styles.floatingMenuBtn}>
-                <NewPlan width={59} height={59} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Animated.View style={[styles.dim, dimStyle]} onTouchEnd={toggleMenu} />
         )}
-        <TouchableOpacity style={styles.floatingBtn} onPress={toggleMenu}>
-          {isMenuOpen ? (
-            <FloatingClose width={65} height={65} />
-          ) : (
-            <FloatingPlus width={65} height={65} />
+
+        {/* 플로팅 버튼 */}
+        <View style={styles.floatingContainer}>
+          {isMenuOpen && (
+            <View style={styles.floatingMenu}>
+              <View style={styles.floatingMenuItem}>
+                <Text style={styles.floatingMenuText}>일정 변경</Text>
+                <TouchableOpacity style={styles.floatingMenuBtn}>
+                  <EditIcon width={59} height={59} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.floatingMenuItem}>
+                <Text style={styles.floatingMenuText}>새 일정</Text>
+                <TouchableOpacity
+                  style={styles.floatingMenuBtn}
+                  onPress={openNewSchedule}
+                >
+                  <NewPlan width={59} height={59} />
+                </TouchableOpacity>
+              </View>
+            </View>
           )}
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          <TouchableOpacity style={styles.floatingBtn} onPress={toggleMenu}>
+            {isMenuOpen ? (
+              <FloatingClose width={65} height={65} />
+            ) : (
+              <FloatingPlus width={65} height={65} />
+            )}
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+
+      <NewScheduleSheet
+        bottomSheetRef={newScheduleSheetRef}
+        onClose={() => newScheduleSheetRef.current?.close()}
+      />
+    </GestureHandlerRootView>
   );
 }
 
@@ -130,15 +147,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary.background,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
   headerRight: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
   },
   profileCircle: {
@@ -153,8 +170,8 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   monthRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
     marginBottom: 8,
   },
@@ -174,7 +191,7 @@ const styles = StyleSheet.create({
     color: colors.gray[40],
   },
   dim: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
@@ -182,19 +199,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.semantic.dimBackground,
   },
   floatingContainer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 32,
     right: 20,
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
     gap: 12,
   },
   floatingMenu: {
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
     gap: 12,
   },
   floatingMenuItem: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
   },
   floatingMenuText: {
@@ -204,14 +221,14 @@ const styles = StyleSheet.create({
   floatingMenuBtn: {
     width: 52,
     height: 52,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   floatingBtn: {
     width: 65,
     height: 65,
     borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
