@@ -31,6 +31,7 @@ import InfoIcon from "@assets/icons/info.svg";
 
 const PRIORITY_LEVELS = [0, 1 / 3, 2 / 3, 1] as const;
 const THUMB_SIZE = 24;
+const DOT_SIZE = 8;
 const PRIORITY_ICONS = [StarGreen, StarYellow, StarOrange, StarRed];
 
 function PrioritySlider({
@@ -44,6 +45,19 @@ function PrioritySlider({
   const thumbOffset = useSharedValue(value);
   const startOffset = useSharedValue(value);
   const [activeIndex, setActiveIndex] = useState(2);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  // 트랙의 실제 길이 = containerWidth - THUMB_SIZE
+  // dot 위치: level * (containerWidth - THUMB_SIZE) + THUMB_SIZE/2 - DOT_SIZE/2
+  const DOT_POSITIONS =
+    containerWidth > 0
+      ? PRIORITY_LEVELS.map(
+          (level) =>
+            level * (containerWidth - THUMB_SIZE) +
+            THUMB_SIZE / 2 -
+            DOT_SIZE / 2
+        )
+      : [];
 
   const pan = Gesture.Pan()
     .activeOffsetX([-5, 5])
@@ -81,20 +95,32 @@ function PrioritySlider({
   return (
     <View style={sliderStyles.container}>
       <Text style={sliderStyles.sideLabel}>보류</Text>
+
       <GestureDetector gesture={pan}>
         <View
           style={sliderStyles.trackContainer}
           onLayout={(e) => {
-            trackWidth.value = e.nativeEvent.layout.width;
+            const w = e.nativeEvent.layout.width;
+            trackWidth.value = w;
             thumbOffset.value = value;
+            setContainerWidth(w);
           }}
         >
+          {/* 트랙: thumb 중심 기준으로 양 끝 dot 중심에 맞춤 */}
           <View style={sliderStyles.track} />
+
+          {/* 모든 인덱스에 dot 렌더 (thumb 아래 겹치도록) */}
+          {DOT_POSITIONS.map((left, i) => (
+            <View key={i} style={[sliderStyles.dot, { left }]} />
+          ))}
+
+          {/* Thumb: 트랙 위에서 움직임 */}
           <Animated.View style={[sliderStyles.thumb, thumbStyle]}>
             <ActiveIcon width={THUMB_SIZE} height={THUMB_SIZE} />
           </Animated.View>
         </View>
       </GestureDetector>
+
       <Text style={sliderStyles.sideLabel}>최우선</Text>
     </View>
   );
@@ -113,9 +139,31 @@ const sliderStyles = StyleSheet.create({
     lineHeight: 12,
     color: colors.semantic.sliderLabel,
   },
-  trackContainer: { flex: 1, height: THUMB_SIZE, justifyContent: "center" },
-  track: { height: 2, backgroundColor: colors.gray[70], borderRadius: 1 },
-  thumb: { position: "absolute", width: THUMB_SIZE, height: THUMB_SIZE },
+  trackContainer: {
+    flex: 1,
+    height: THUMB_SIZE,
+    justifyContent: "center",
+  },
+  track: {
+    // 트랙은 thumb 중심(THUMB_SIZE/2)부터 오른쪽 끝 thumb 중심까지
+    marginHorizontal: THUMB_SIZE / 2,
+    height: 2,
+    backgroundColor: colors.gray[70],
+    borderRadius: 1,
+  },
+  dot: {
+    position: "absolute",
+    width: DOT_SIZE,
+    height: DOT_SIZE,
+    borderRadius: DOT_SIZE / 2,
+    backgroundColor: colors.gray[70],
+    top: (THUMB_SIZE - DOT_SIZE) / 2,
+  },
+  thumb: {
+    position: "absolute",
+    width: THUMB_SIZE,
+    height: THUMB_SIZE,
+  },
 });
 
 interface NewScheduleSheetProps {
@@ -339,9 +387,11 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 4,
   },
-  placeholder: {
+  memoInput: {
     ...typography.body6,
-    color: colors.semantic.timelineLabel,
+    color: colors.primary.black,
+    flex: 1,
+    textAlign: "right",
   },
   submitButton: {
     backgroundColor: colors.primary.black,
@@ -354,11 +404,5 @@ const styles = StyleSheet.create({
   submitText: {
     ...typography.body3,
     color: colors.gray[100],
-  },
-  memoInput: {
-    ...typography.body6,
-    color: colors.primary.black,
-    flex: 1,
-    textAlign: "right",
   },
 });
