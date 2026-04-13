@@ -26,11 +26,17 @@ export const colors = {
     90: "#F1F1F1",
     100: "#FFFFFF",
   },
+
   semantic: {
     labelAlternative: "#5C5C5C",
     backgroundStrong: "#EDEBE8",
     timelineLabel: "#C4C4C4",
     dimBackground: "#000000CC",
+    inputPlaceholder: "#D7D7D7",
+    inputLabel: "#514F5E",
+    inputValue: "#8B8B8B",
+    sliderLabel: "#8A8A8A",
+    memoPlaeholder: "#C4C4C4",
   },
 } as const;
 
