@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 
 import { colors } from "@constants/colors";
-import { fontFamily } from "@constants/typography";
+import { typography } from "@constants/typography";
 import { Schedule } from "@/types/schedule";
 import ScheduleCard from "./ScheduleCard";
 
@@ -68,8 +68,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   hourText: {
-    fontFamily: fontFamily.pretendard.medium,
-    fontSize: 12,
+    ...typography.label2,
     lineHeight: 12,
     color: colors.semantic.timelineLabel,
   },

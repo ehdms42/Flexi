@@ -26,7 +26,7 @@ import NewPlan from "../../assets/icons/new-plan.svg";
 import WeeklyCalendar from "@components/features/calendar/WeeklyCalendar";
 import TimelineView from "@components/features/schedule/TimelineView";
 import { colors } from "@constants/colors";
-import { fontFamily } from "@constants/typography";
+import { fontFamily, typography } from "@constants/typography";
 import { MOCK_WEEK_DATES, MOCK_SCHEDULES } from "@/mocks/schedule";
 
 export default function HomeScreen() {
@@ -161,14 +161,12 @@ const styles = StyleSheet.create({
     color: colors.primary.black,
   },
   delayText: {
-    fontFamily: fontFamily.pretendard.semiBold,
-    fontSize: 14,
+    ...typography.body8,
     lineHeight: 20,
     color: colors.gray[60],
   },
   delayHighlight: {
-    fontFamily: fontFamily.pretendard.semiBold,
-    fontSize: 14,
+    ...typography.body8,
     color: colors.gray[40],
   },
   dim: {
@@ -196,8 +194,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   floatingMenuText: {
-    fontFamily: fontFamily.pretendard.semiBold,
-    fontSize: 14,
+    ...typography.body8,
     color: colors.gray[100],
   },
   floatingMenuBtn: {

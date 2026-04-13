@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import { colors } from "@constants/colors";
-import { fontFamily } from "@constants/typography";
+import { typography } from "@constants/typography";
 import { CategoryType, Priority } from "@/types/schedule";
 import StarRed from "@assets/icons/star-red.svg";
 import StarOrange from "@assets/icons/star-orange.svg";
@@ -88,13 +88,11 @@ const styles = StyleSheet.create({
     height: 23,
   },
   title: {
-    fontFamily: fontFamily.pretendard.bold,
-    fontSize: 16,
+    ...typography.body3,
     color: colors.primary.black,
   },
   category: {
-    fontFamily: fontFamily.pretendard.semiBold,
-    fontSize: 12,
+    ...typography.label1,
     lineHeight: 12,
     color: colors.gray[50],
   },
@@ -104,8 +102,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   time: {
-    fontFamily: fontFamily.pretendard.medium,
-    fontSize: 12,
+    ...typography.label2,
     color: colors.gray[50],
   },
   categoryIcon: {

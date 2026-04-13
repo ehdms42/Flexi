@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 import { colors } from "@constants/colors";
-import { fontFamily } from "@constants/typography";
+import { fontFamily, typography } from "@constants/typography";
 import { WeekDay } from "@/types/schedule";
 
 interface WeeklyCalendarProps {
@@ -76,8 +76,7 @@ const styles = StyleSheet.create({
     color: colors.gray[100],
   },
   dayText: {
-    fontFamily: fontFamily.pretendard.semiBold,
-    fontSize: 12,
+    ...typography.label1,
     lineHeight: 12,
     color: colors.gray[60],
     textAlign: "center",
