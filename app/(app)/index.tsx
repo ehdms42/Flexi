@@ -27,29 +27,7 @@ import WeeklyCalendar from "@components/features/calendar/WeeklyCalendar";
 import TimelineView from "@components/features/schedule/TimelineView";
 import { colors } from "@constants/colors";
 import { fontFamily } from "@constants/typography";
-
-const WEEK_DATES = [
-  { date: 14, day: "월" },
-  { date: 15, day: "화" },
-  { date: 16, day: "수" },
-  { date: 17, day: "목" },
-  { date: 18, day: "금" },
-  { date: 19, day: "토" },
-  { date: 20, day: "일" },
-];
-
-const MOCK_SCHEDULES = [
-  {
-    id: "1",
-    title: "팀 회의",
-    category: "회사",
-    categoryType: "work" as const,
-    startTime: "10:00",
-    endTime: "11:00",
-    hour: 10,
-    priority: "red" as const,
-  },
-];
+import { MOCK_WEEK_DATES, MOCK_SCHEDULES } from "@/mocks/schedule";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -100,7 +78,7 @@ export default function HomeScreen() {
         <WeeklyCalendar
           selectedDate={selectedDate}
           onSelectDate={setSelectedDate}
-          weekDates={WEEK_DATES}
+          weekDates={MOCK_WEEK_DATES}
         />
 
         {/* 타임라인 */}
