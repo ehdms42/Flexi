@@ -10,18 +10,19 @@ import {
 
 import { useRouter } from "expo-router";
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 
-import Menu from "../../assets/icons/menu.svg";
-import Bell from "../../assets/icons/bell.svg";
-import ChevronDown from "../../assets/icons/chevron-down.svg";
-import FloatingPlus from "../../assets/icons/floating-plus.svg";
-import FloatingClose from "../../assets/icons/floating-close.svg";
-import EditIcon from "../../assets/icons/edit.svg";
-import NewPlan from "../../assets/icons/new-plan.svg";
+import Menu from "@assets/icons/menu.svg";
+import Bell from "@assets/icons/bell.svg";
+import ChevronDown from "@assets/icons/chevron-down.svg";
+import FloatingPlus from "@assets/icons/floating-plus.svg";
+import FloatingClose from "@assets/icons/floating-close.svg";
+import EditIcon from "@assets/icons/edit.svg";
+import NewPlan from "@assets/icons/new-plan.svg";
 
 import WeeklyCalendar from "@components/features/calendar/WeeklyCalendar";
 import TimelineView from "@components/features/schedule/TimelineView";
@@ -40,10 +41,13 @@ export default function HomeScreen() {
     opacity: opacity.value,
   }));
 
+  const closeMenu = () => setIsMenuOpen(false);
+
   const toggleMenu = () => {
     if (isMenuOpen) {
-      opacity.value = withTiming(0, { duration: 200 });
-      setTimeout(() => setIsMenuOpen(false), 200);
+      opacity.value = withTiming(0, { duration: 200 }, (finished) => {
+        if (finished) runOnJS(closeMenu)();
+      });
     } else {
       setIsMenuOpen(true);
       opacity.value = withTiming(1, { duration: 200 });
