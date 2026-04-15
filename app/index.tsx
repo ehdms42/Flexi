@@ -35,7 +35,7 @@ export default function SplashScreen() {
     // } else {
     //   router.replace('/(auth)/login');
     // }
-    router.replace("/(app)");
+    router.replace("/(auth)/login");
   };
 
   useEffect(() => {
