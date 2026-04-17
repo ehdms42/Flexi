@@ -78,7 +78,7 @@ export default function LoginScreen() {
 
         {/* 링크들 */}
         <View style={styles.linkRow}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/(auth)/find-id")}>
             <Text style={styles.linkText}>아이디 찾기</Text>
           </TouchableOpacity>
           <Text style={styles.linkDivider}>|</Text>
