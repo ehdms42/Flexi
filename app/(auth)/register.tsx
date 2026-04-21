@@ -55,6 +55,16 @@ export default function RegisterScreen() {
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 
+  const validateEmail = (localPart: string, domain: string) => {
+    if (!localPart || localPart.length === 0 || !domain || !domain.includes(".")) {
+      return "이메일 주소를 확인해주세요.";
+    }
+    if (!/^[a-zA-Z0-9._%+\-]+$/.test(localPart)) {
+      return "이메일 주소를 확인해주세요.";
+    }
+    return "";
+  };
+
   const validateUsername = (value: string) => {
     if (!value || value.length < 4 || value.length > 12) {
       return "아이디를 확인해주세요.";
@@ -314,7 +324,12 @@ export default function RegisterScreen() {
               onChangeText={setVerifyCode}
               keyboardType="number-pad"
             />
-            <TouchableOpacity style={styles.actionButton}>
+            {/* TODO: 이메일 인증 API 연동 후 onPress 연결 */}
+            <TouchableOpacity
+              style={styles.actionButton}
+              disabled
+              accessibilityState={{ disabled: true }}
+            >
               <Text style={styles.actionButtonText}>인증번호 전송</Text>
             </TouchableOpacity>
           </View>
@@ -341,7 +356,7 @@ export default function RegisterScreen() {
             onPress={async () => {
               const usernameError = validateUsername(username);
               const passwordError = validatePassword(password);
-              const emailError = email && emailDomain ? "" : "error";
+              const emailError = validateEmail(email, emailDomain);
               const verifyCodeError = verifyCode ? "" : "error";
               setErrors({
                 username: usernameError,
