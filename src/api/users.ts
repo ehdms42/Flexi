@@ -14,3 +14,12 @@ export const signUp = async (body: SignUpRequest): Promise<void> => {
     throw new Error(res.data.error?.message ?? "회원가입에 실패했습니다.");
   }
 };
+
+export const checkUsername = async (username: string): Promise<void> => {
+  const res = await apiClient.get<ApiResponse<null>>("/v1/users/check-username", {
+    params: { username },
+  });
+  if (res.data.result === "ERROR") {
+    throw new Error(res.data.error?.message ?? "이미 사용 중인 아이디입니다.");
+  }
+};

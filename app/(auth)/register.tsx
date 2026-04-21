@@ -20,7 +20,7 @@ import ErrorImg from "@assets/icons/error.svg";
 import OpenEyes from "@assets/icons/open-eyes.svg";
 import CloseEyes from "@assets/icons/close-eyes.svg";
 import { colors } from "@constants/colors";
-import { signUp } from "@api/users";
+import { signUp, checkUsername } from "@api/users";
 import { fontFamily, typography } from "@constants/typography";
 
 const EMAIL_DOMAINS = [
@@ -52,6 +52,8 @@ export default function RegisterScreen() {
     verifyCode: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 
   const validateUsername = (value: string) => {
     if (!value || value.length < 4 || value.length > 12) {
@@ -70,6 +72,7 @@ export default function RegisterScreen() {
   };
 
   const isFormValid =
+    isUsernameAvailable &&
     username.length >= 4 &&
     username.length <= 12 &&
     validatePassword(password) === "" &&
@@ -105,19 +108,37 @@ export default function RegisterScreen() {
               placeholder="아이디 입력"
               placeholderTextColor={colors.gray[70]}
               value={username}
-              onChangeText={setUsername}
+              onChangeText={(v) => { setUsername(v); setIsUsernameAvailable(false); }}
               autoCapitalize="none"
             />
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => {
-                setErrors((prev) => ({
-                  ...prev,
-                  username: validateUsername(username),
-                }));
+              disabled={isCheckingUsername}
+              onPress={async () => {
+                const usernameError = validateUsername(username);
+                if (usernameError) {
+                  setErrors((prev) => ({ ...prev, username: usernameError }));
+                  return;
+                }
+                setIsCheckingUsername(true);
+                try {
+                  await checkUsername(username);
+                  setIsUsernameAvailable(true);
+                  setErrors((prev) => ({ ...prev, username: "" }));
+                  Alert.alert("사용 가능", "사용 가능한 아이디입니다.");
+                } catch (e: any) {
+                  setIsUsernameAvailable(false);
+                  setErrors((prev) => ({ ...prev, username: e.message }));
+                } finally {
+                  setIsCheckingUsername(false);
+                }
               }}
             >
-              <Text style={styles.actionButtonText}>중복 확인</Text>
+              {isCheckingUsername ? (
+                <ActivityIndicator color={colors.gray[100]} />
+              ) : (
+                <Text style={styles.actionButtonText}>중복 확인</Text>
+              )}
             </TouchableOpacity>
           </View>
           {errors.username ? (
