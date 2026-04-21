@@ -40,6 +40,9 @@ const MONTH_NAMES = [
 
 const DAY_NAMES = ['월', '화', '수', '목', '금', '토', '일'] as const;
 
+const toIsoDate = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
 const getWeekDates = (date: Date): WeekDay[] => {
   const dow = date.getDay();
   const monday = new Date(date);
@@ -47,14 +50,14 @@ const getWeekDates = (date: Date): WeekDay[] => {
   return DAY_NAMES.map((day, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    return { date: d.getDate(), day };
+    return { isoDate: toIsoDate(d), date: d.getDate(), day };
   });
 };
 
 const today = new Date();
 
 export default function HomeScreen() {
-  const [selectedDate, setSelectedDate] = useState(today.getDate());
+  const [selectedDate, setSelectedDate] = useState(toIsoDate(today));
   const [weekDates] = useState<WeekDay[]>(() => getWeekDates(today));
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const newScheduleSheetRef = useRef<BottomSheet>(null);

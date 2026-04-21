@@ -5,8 +5,8 @@ import { fontFamily, typography } from "@constants/typography";
 import { WeekDay } from "@/types/schedule";
 
 interface WeeklyCalendarProps {
-  selectedDate: number;
-  onSelectDate: (date: number) => void;
+  selectedDate: string;
+  onSelectDate: (isoDate: string) => void;
   weekDates: WeekDay[];
 }
 
@@ -18,12 +18,12 @@ export default function WeeklyCalendar({
   return (
     <View style={styles.container}>
       {weekDates.map((item) => {
-        const isSelected = item.date === selectedDate;
+        const isSelected = item.isoDate === selectedDate;
         return (
           <TouchableOpacity
-            key={item.date}
+            key={item.isoDate}
             style={[styles.dateItem, isSelected && styles.dateItemSelected]}
-            onPress={() => onSelectDate(item.date)}
+            onPress={() => onSelectDate(item.isoDate)}
           >
             <Text
               style={[

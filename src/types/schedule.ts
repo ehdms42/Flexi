@@ -25,6 +25,7 @@ export interface Schedule {
 }
 
 export interface WeekDay {
+  isoDate: string;
   date: number;
   day: string;
 }
