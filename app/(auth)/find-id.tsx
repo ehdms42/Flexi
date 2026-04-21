@@ -21,9 +21,9 @@ type TabType = "id" | "password";
 type StepType = "form" | "result";
 
 const validatePassword = (value: string) => {
-  const regex =
-    /^(?=.*[a-zA-Z])(?=.*[0-9!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/;
-  return regex.test(value) ? "" : "format";
+  if (value.length < 6 || value.length > 20) return "format";
+  const typeCount = [/[A-Z]/, /[a-z]/, /[0-9]/, /[!@#$%^&*]/].filter((r) => r.test(value)).length;
+  return typeCount >= 2 ? "" : "format";
 };
 
 export default function FindIdScreen() {
@@ -61,6 +61,12 @@ export default function FindIdScreen() {
   const switchTab = (next: TabType) => {
     setTab(next);
     setStep("form");
+    setName(""); setEmail(""); setDomain(""); setVerifyCode("");
+    setErrors({ email: false, verifyCode: false });
+    setPwUserId(""); setPwEmail(""); setPwDomain(""); setPwVerifyCode("");
+    setPwErrors({ email: false, verifyCode: false });
+    setPassword(""); setPasswordConfirm("");
+    setResetErrors({ password: "", confirm: "" });
   };
 
   const handleIdSubmit = () => {
@@ -91,9 +97,11 @@ export default function FindIdScreen() {
 
   const handleSubmit = () => {
     if (tab === "id") {
-      step === "result" ? router.push("/login") : handleIdSubmit();
+      if (step === "result") router.push("/login");
+      else handleIdSubmit();
     } else {
-      step === "result" ? handlePwReset() : handlePwNext();
+      if (step === "result") handlePwReset();
+      else handlePwNext();
     }
   };
 
@@ -183,6 +191,7 @@ export default function FindIdScreen() {
                 <Text style={styles.resultHighlight}>아이디</Text>
                 {"입니다."}
               </Text>
+              {/* TODO: 아이디 찾기 API 연동 후 실제 데이터로 교체 */}
               <View style={styles.resultCard}>
                 <View style={styles.resultRow}>
                   <Text style={styles.resultLabel}>아이디</Text>
