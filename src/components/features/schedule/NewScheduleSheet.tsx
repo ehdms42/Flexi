@@ -15,14 +15,14 @@ import CustomTimePicker from "./CustomTimePicker";
 import { useNewScheduleForm } from "@/hooks/useNewScheduleForm";
 import { formatDate, formatTime } from "@/utils/dateFormat";
 import { createTask, TaskPriority } from "@api/schedules";
-import { PRIORITY_LEVELS } from "@constants/schedule";
+import type { PriorityIndex } from "@/types/schedule";
 
 interface NewScheduleSheetProps {
   bottomSheetRef: React.RefObject<BottomSheet | null>;
   onClose?: () => void;
 }
 
-const PRIORITY_MAP: Record<number, TaskPriority> = {
+const PRIORITY_INDEX_TO_API: Record<PriorityIndex, TaskPriority> = {
   0: "HOLD",
   1: "NORMAL",
   2: "HIGH",
@@ -174,7 +174,6 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
                 Alert.alert("입력 오류", "종료 시간은 시작 시간보다 늦어야 합니다.");
                 return;
               }
-              const priorityIndex = PRIORITY_LEVELS.indexOf(form.priority as typeof PRIORITY_LEVELS[number]);
               setIsLoading(true);
               try {
                 await createTask({
@@ -182,7 +181,7 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
                   title: form.title,
                   startTime: toApiTime(form.startDate),
                   endTime: toApiTime(form.endDate),
-                  priority: PRIORITY_MAP[priorityIndex >= 0 ? priorityIndex : 2],
+                  priority: PRIORITY_INDEX_TO_API[form.priority],
                 });
                 close();
               } catch (e: any) {

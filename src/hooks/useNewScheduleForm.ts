@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { CategoryType, DatePickerMode, NewScheduleForm } from "@/types/schedule";
+import { CategoryType, DatePickerMode, NewScheduleForm, PriorityIndex } from "@/types/schedule";
 
 const DEFAULT_DURATION_MS = 60 * 60 * 1000; // 1시간
 
 const makeInitialForm = (): NewScheduleForm => {
   const startDate = new Date();
   const endDate = new Date(startDate.getTime() + DEFAULT_DURATION_MS);
-  return { title: "", location: "", priority: 2 / 3, category: "work", startDate, endDate, memo: "" };
+  return { title: "", location: "", priority: 2 as PriorityIndex, category: "work", startDate, endDate, memo: "" };
 };
 
 export function useNewScheduleForm() {
@@ -15,7 +15,7 @@ export function useNewScheduleForm() {
 
   const setTitle = (title: string) => setForm((prev) => ({ ...prev, title }));
   const setLocation = (location: string) => setForm((prev) => ({ ...prev, location }));
-  const setPriority = (priority: number) => setForm((prev) => ({ ...prev, priority }));
+  const setPriority = (priority: PriorityIndex) => setForm((prev) => ({ ...prev, priority }));
   const setMemo = (memo: string) => setForm((prev) => ({ ...prev, memo }));
 
   const toggleCategory = () =>

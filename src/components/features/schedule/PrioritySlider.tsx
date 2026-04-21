@@ -11,25 +11,19 @@ import Animated, {
 import { colors } from "@constants/colors";
 import { fontFamily } from "@constants/typography";
 import { PRIORITY_LEVELS, PRIORITY_ICONS, THUMB_SIZE, DOT_SIZE } from "@constants/schedule";
+import type { PriorityIndex } from "@/types/schedule";
 
 interface PrioritySliderProps {
-  value: number;
-  onChange: (v: number) => void;
+  value: PriorityIndex;
+  onChange: (idx: PriorityIndex) => void;
 }
-
-const valueToIndex = (v: number) =>
-  PRIORITY_LEVELS.reduce(
-    (best, curr, i) =>
-      Math.abs(curr - v) < Math.abs(PRIORITY_LEVELS[best] - v) ? i : best,
-    0
-  );
 
 export default function PrioritySlider({ value, onChange }: PrioritySliderProps) {
   const trackWidth = useSharedValue(0);
-  const thumbOffset = useSharedValue(value);
-  const startOffset = useSharedValue(value);
+  const thumbOffset = useSharedValue(PRIORITY_LEVELS[value]);
+  const startOffset = useSharedValue(PRIORITY_LEVELS[value]);
   const isDragging = useRef(false);
-  const [activeIndex, setActiveIndex] = useState(() => valueToIndex(value));
+  const [activeIndex, setActiveIndex] = useState(value);
   const [containerWidth, setContainerWidth] = useState(0);
 
   const dotPositions =
@@ -42,9 +36,8 @@ export default function PrioritySlider({ value, onChange }: PrioritySliderProps)
 
   useEffect(() => {
     if (isDragging.current) return;
-    const idx = valueToIndex(value);
-    thumbOffset.value = withSpring(PRIORITY_LEVELS[idx], { damping: 20, stiffness: 300 });
-    setActiveIndex(idx);
+    thumbOffset.value = withSpring(PRIORITY_LEVELS[value], { damping: 20, stiffness: 300 });
+    setActiveIndex(value);
   }, [value]);
 
   const setDragging = (v: boolean) => { isDragging.current = v; };
@@ -61,18 +54,17 @@ export default function PrioritySlider({ value, onChange }: PrioritySliderProps)
         1,
         Math.max(0, startOffset.value + e.translationX / trackWidth.value)
       );
-      runOnJS(onChange)(thumbOffset.value);
     })
     .onEnd(() => {
-      const nearest = PRIORITY_LEVELS.reduce((prev, curr) =>
-        Math.abs(curr - thumbOffset.value) < Math.abs(prev - thumbOffset.value)
-          ? curr
-          : prev
-      );
-      const idx = PRIORITY_LEVELS.indexOf(nearest);
-      thumbOffset.value = withSpring(nearest, { damping: 20, stiffness: 300 });
-      runOnJS(setActiveIndex)(idx);
-      runOnJS(onChange)(nearest);
+      let nearestIdx = 0 as PriorityIndex;
+      let minDist = Infinity;
+      PRIORITY_LEVELS.forEach((level, i) => {
+        const dist = Math.abs(level - thumbOffset.value);
+        if (dist < minDist) { minDist = dist; nearestIdx = i as PriorityIndex; }
+      });
+      thumbOffset.value = withSpring(PRIORITY_LEVELS[nearestIdx], { damping: 20, stiffness: 300 });
+      runOnJS(setActiveIndex)(nearestIdx);
+      runOnJS(onChange)(nearestIdx);
       runOnJS(setDragging)(false);
     });
 
@@ -91,7 +83,7 @@ export default function PrioritySlider({ value, onChange }: PrioritySliderProps)
           onLayout={(e) => {
             const w = e.nativeEvent.layout.width;
             trackWidth.value = w;
-            thumbOffset.value = value;
+            thumbOffset.value = PRIORITY_LEVELS[value];
             setContainerWidth(w);
           }}
         >

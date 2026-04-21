@@ -6,7 +6,7 @@ import CategoryWork from "@assets/icons/category-work.svg";
 import CategoryPersonal from "@assets/icons/category-personal.svg";
 import type { ComponentType } from "react";
 import { Dimensions } from "react-native";
-import type { CategoryType, Priority } from "@/types/schedule";
+import type { CategoryType, Priority, PriorityIndex } from "@/types/schedule";
 
 // Priority Slider
 export const PRIORITY_LEVELS = [0, 1 / 3, 2 / 3, 1] as const;
@@ -25,6 +25,14 @@ export const PRIORITY_ICONS = [
   PRIORITY_ICON_MAP.orange,
   PRIORITY_ICON_MAP.red,
 ];
+
+// PriorityIndex → 도메인 Priority 문자열 매핑
+export const PRIORITY_INDEX_TO_DOMAIN: Record<PriorityIndex, Priority> = {
+  0: "green",
+  1: "yellow",
+  2: "orange",
+  3: "red",
+};
 
 export const CATEGORY_ICON_MAP: Record<CategoryType, ComponentType<{ width?: number; height?: number }>> = {
   work: CategoryWork,
