@@ -11,7 +11,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { View, Dimensions } from "react-native";
 
-import Logo from "../assets/icons/logo.svg";
+import Logo from "@assets/icons/logo.svg";
 
 const { width } = Dimensions.get("window");
 
