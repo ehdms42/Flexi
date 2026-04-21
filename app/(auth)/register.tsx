@@ -48,6 +48,7 @@ export default function RegisterScreen() {
   const [errors, setErrors] = useState({
     username: "",
     password: "",
+    passwordConfirm: "",
     email: "",
     verifyCode: "",
   });
@@ -204,7 +205,7 @@ export default function RegisterScreen() {
               styles.input,
               styles.passwordRow,
               { marginTop: 8 },
-              errors.password ? styles.inputError : null,
+              errors.passwordConfirm ? styles.inputError : null,
             ]}
           >
             <TextInput
@@ -212,7 +213,10 @@ export default function RegisterScreen() {
               placeholder="비밀번호 확인"
               placeholderTextColor={colors.gray[70]}
               value={passwordConfirm}
-              onChangeText={setPasswordConfirm}
+              onChangeText={(v) => {
+                setPasswordConfirm(v);
+                setErrors((prev) => ({ ...prev, passwordConfirm: "" }));
+              }}
               secureTextEntry={!showPasswordConfirm}
             />
             <TouchableOpacity
@@ -230,6 +234,11 @@ export default function RegisterScreen() {
             <View style={styles.errorRow}>
               <ErrorImg width={14} height={14} />
               <Text style={styles.errorText}>{errors.password}</Text>
+            </View>
+          ) : errors.passwordConfirm ? (
+            <View style={styles.errorRow}>
+              <ErrorImg width={14} height={14} />
+              <Text style={styles.errorText}>{errors.passwordConfirm}</Text>
             </View>
           ) : (
             <Text style={styles.hintText}>
@@ -356,16 +365,18 @@ export default function RegisterScreen() {
             onPress={async () => {
               const usernameError = validateUsername(username);
               const passwordError = validatePassword(password);
+              const passwordConfirmError = password !== passwordConfirm ? "비밀번호가 일치하지 않습니다." : "";
               const emailError = validateEmail(email, emailDomain);
               const verifyCodeError = verifyCode ? "" : "error";
               setErrors({
                 username: usernameError,
                 password: passwordError,
+                passwordConfirm: passwordConfirmError,
                 email: emailError,
                 verifyCode: verifyCodeError,
               });
 
-              if (usernameError || passwordError || emailError || verifyCodeError) return;
+              if (usernameError || passwordError || passwordConfirmError || emailError || verifyCodeError) return;
 
               setIsLoading(true);
               try {
