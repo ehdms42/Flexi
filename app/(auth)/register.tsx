@@ -97,6 +97,7 @@ export default function RegisterScreen() {
     password === passwordConfirm &&
     email.length > 0 &&
     emailDomain.length > 0 &&
+    validateEmail(email, emailDomain) === "" &&
     verifyCode.length > 0;
 
   return (
@@ -126,7 +127,11 @@ export default function RegisterScreen() {
               placeholder="아이디 입력"
               placeholderTextColor={colors.gray[70]}
               value={username}
-              onChangeText={(v) => { setUsername(v); setIsUsernameAvailable(false); }}
+              onChangeText={(v) => {
+                setUsername(v);
+                setIsUsernameAvailable(false);
+                setErrors((prev) => ({ ...prev, username: "" }));
+              }}
               autoCapitalize="none"
             />
             <TouchableOpacity
@@ -146,7 +151,8 @@ export default function RegisterScreen() {
                   Alert.alert("사용 가능", "사용 가능한 아이디입니다.");
                 } catch (e: any) {
                   setIsUsernameAvailable(false);
-                  setErrors((prev) => ({ ...prev, username: e.message }));
+                  const safeMsg = e.response?.data?.message || e.message || "아이디를 사용할 수 없습니다.";
+                  setErrors((prev) => ({ ...prev, username: safeMsg }));
                 } finally {
                   setIsCheckingUsername(false);
                 }

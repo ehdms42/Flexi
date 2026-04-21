@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
 } from "react-native";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -53,10 +56,63 @@ export default function FindIdScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [resetErrors, setResetErrors] = useState({ password: "", confirm: "" });
+  const [isLoadingVerify, setIsLoadingVerify] = useState(false);
 
-  const isIdFormFilled = !!(name && email && domain && verifyCode);
-  const isPwFormFilled = !!(pwUserId && pwEmail && pwDomain && pwVerifyCode);
-  const isResetFilled = !!(password && passwordConfirm);
+  const sendVerificationCode = async () => {
+    setIsLoadingVerify(true);
+    try {
+      // TODO: Replace with actual API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Alert or toast notification for success
+    } catch (e: any) {
+      setErrors((prev) => ({ ...prev, email: true }));
+    } finally {
+      setIsLoadingVerify(false);
+    }
+  };
+
+  const verifyCode = async () => {
+    setIsLoadingVerify(true);
+    try {
+      // TODO: Replace with actual API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Alert or toast notification for success
+    } catch (e: any) {
+      setErrors((prev) => ({ ...prev, verifyCode: true }));
+    } finally {
+      setIsLoadingVerify(false);
+    }
+  };
+
+  const sendPwVerificationCode = async () => {
+    setIsLoadingVerify(true);
+    try {
+      // TODO: Replace with actual API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Alert or toast notification for success
+    } catch (e: any) {
+      setPwErrors((prev) => ({ ...prev, email: true }));
+    } finally {
+      setIsLoadingVerify(false);
+    }
+  };
+
+  const verifyPwCode = async () => {
+    setIsLoadingVerify(true);
+    try {
+      // TODO: Replace with actual API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Alert or toast notification for success
+    } catch (e: any) {
+      setPwErrors((prev) => ({ ...prev, verifyCode: true }));
+    } finally {
+      setIsLoadingVerify(false);
+    }
+  };
+
+  const isIdFormFilled = !!(name.trim() && email.trim() && domain.trim() && verifyCode.trim());
+  const isPwFormFilled = !!(pwUserId.trim() && pwEmail.trim() && pwDomain.trim() && pwVerifyCode.trim());
+  const isResetFilled = !!(password.trim() && passwordConfirm.trim());
 
   const switchTab = (next: TabType) => {
     setTab(next);
@@ -70,15 +126,15 @@ export default function FindIdScreen() {
   };
 
   const handleIdSubmit = () => {
-    const emailErr = !email;
-    const verifyErr = !verifyCode;
+    const emailErr = !email.trim();
+    const verifyErr = !verifyCode.trim();
     setErrors({ email: emailErr, verifyCode: verifyErr });
     if (!emailErr && !verifyErr) setStep("result");
   };
 
   const handlePwNext = () => {
-    const emailErr = !pwEmail;
-    const verifyErr = !pwVerifyCode;
+    const emailErr = !pwEmail.trim();
+    const verifyErr = !pwVerifyCode.trim();
     setPwErrors({ email: emailErr, verifyCode: verifyErr });
     if (!emailErr && !verifyErr) setStep("result");
   };
@@ -87,7 +143,12 @@ export default function FindIdScreen() {
     const passwordErr = validatePassword(password);
     const confirmErr = password !== passwordConfirm ? "mismatch" : "";
     setResetErrors({ password: passwordErr, confirm: confirmErr });
-    if (!passwordErr && !confirmErr) router.push("/login");
+    if (!passwordErr && !confirmErr) {
+      setPassword("");
+      setPasswordConfirm("");
+      setResetErrors({ password: "", confirm: "" });
+      router.replace("/login");
+    }
   };
 
   const getDisabled = () => {
@@ -114,36 +175,46 @@ export default function FindIdScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <ArrowLeft width={36} height={36} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>
-          {tab === "id" ? "아이디 찾기" : "비밀번호 찾기"}
-        </Text>
-        <View style={{ width: 36 }} />
-      </View>
-
-      <View style={styles.tabRow}>
-        <TouchableOpacity
-          style={[styles.tab, tab === "id" && styles.tabActive]}
-          onPress={() => switchTab("id")}
-        >
-          <Text style={[styles.tabText, tab === "id" && styles.tabTextActive]}>
-            아이디 찾기
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoid}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <ArrowLeft width={36} height={36} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>
+            {tab === "id" ? "아이디 찾기" : "비밀번호 찾기"}
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, tab === "password" && styles.tabActive]}
-          onPress={() => switchTab("password")}
-        >
-          <Text style={[styles.tabText, tab === "password" && styles.tabTextActive]}>
-            비밀번호 찾기
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <View style={{ width: 36 }} />
+        </View>
 
-      <View style={styles.content}>
+        <View style={styles.tabRow}>
+          <TouchableOpacity
+            style={[styles.tab, tab === "id" && styles.tabActive]}
+            onPress={() => switchTab("id")}
+          >
+            <Text style={[styles.tabText, tab === "id" && styles.tabTextActive]}>
+              아이디 찾기
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, tab === "password" && styles.tabActive]}
+            onPress={() => switchTab("password")}
+          >
+            <Text style={[styles.tabText, tab === "password" && styles.tabTextActive]}>
+              비밀번호 찾기
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.content}>
         {tab === "id" ? (
           step === "form" ? (
             <>
@@ -173,7 +244,11 @@ export default function FindIdScreen() {
                   onChangeText={setVerifyCode}
                   keyboardType="number-pad"
                 />
-                <TouchableOpacity style={styles.actionButton}>
+                <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={sendVerificationCode}
+                  disabled={isLoadingVerify}
+                >
                   <Text style={styles.actionButtonText}>인증번호 전송</Text>
                 </TouchableOpacity>
               </View>
@@ -233,7 +308,11 @@ export default function FindIdScreen() {
                 onChangeText={setPwVerifyCode}
                 keyboardType="number-pad"
               />
-              <TouchableOpacity style={styles.actionButton}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={sendPwVerificationCode}
+                disabled={isLoadingVerify}
+              >
                 <Text style={styles.actionButtonText}>인증번호 전송</Text>
               </TouchableOpacity>
             </View>
@@ -312,24 +391,26 @@ export default function FindIdScreen() {
             )}
           </>
         )}
-      </View>
+          </View>
+        </ScrollView>
 
-      <View style={styles.bottomArea}>
-        <TouchableOpacity
-          style={[styles.submitButton, disabled && styles.submitButtonDisabled]}
-          onPress={handleSubmit}
-          disabled={disabled}
-        >
-          <Text
-            style={[
-              styles.submitText,
-              disabled ? styles.submitTextDisabled : styles.submitTextActive,
-            ]}
+        <View style={styles.bottomArea}>
+          <TouchableOpacity
+            style={[styles.submitButton, disabled && styles.submitButtonDisabled]}
+            onPress={handleSubmit}
+            disabled={disabled}
           >
-            {getButtonLabel()}
-          </Text>
-        </TouchableOpacity>
-      </View>
+            <Text
+              style={[
+                styles.submitText,
+                disabled ? styles.submitTextDisabled : styles.submitTextActive,
+              ]}
+            >
+              {getButtonLabel()}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -338,6 +419,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.primary.background,
+  },
+  keyboardAvoid: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   header: {
     flexDirection: "row",

@@ -135,7 +135,14 @@ export default function HomeScreen() {
             <View style={styles.floatingMenu}>
               <View style={styles.floatingMenuItem}>
                 <Text style={styles.floatingMenuText}>일정 변경</Text>
-                <TouchableOpacity style={styles.floatingMenuBtn}>
+                <TouchableOpacity
+                  style={styles.floatingMenuBtn}
+                  onPress={() => {}}
+                  disabled
+                  accessibilityRole="button"
+                  accessibilityLabel="일정 변경"
+                  accessibilityState={{ disabled: true }}
+                >
                   <EditIcon width={59} height={59} />
                 </TouchableOpacity>
               </View>
@@ -144,13 +151,21 @@ export default function HomeScreen() {
                 <TouchableOpacity
                   style={styles.floatingMenuBtn}
                   onPress={openNewSchedule}
+                  accessibilityRole="button"
+                  accessibilityLabel="새 일정"
                 >
                   <NewPlan width={59} height={59} />
                 </TouchableOpacity>
               </View>
             </View>
           )}
-          <TouchableOpacity style={styles.floatingBtn} onPress={toggleMenu}>
+          <TouchableOpacity
+            style={styles.floatingBtn}
+            onPress={toggleMenu}
+            accessibilityRole="button"
+            accessibilityLabel={isMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
+            accessibilityState={{ expanded: isMenuOpen }}
+          >
             {isMenuOpen ? (
               <FloatingClose width={65} height={65} />
             ) : (

@@ -19,12 +19,17 @@ export const PRIORITY_ICON_MAP: Record<Priority, ComponentType<{ width?: number;
 };
 
 // Derived array for index-based access: HOLD(0)→green … HIGHEST(3)→red
-export const PRIORITY_ICONS = [
+export const PRIORITY_ICONS: readonly [
+  ComponentType<{ width?: number; height?: number }>,
+  ComponentType<{ width?: number; height?: number }>,
+  ComponentType<{ width?: number; height?: number }>,
+  ComponentType<{ width?: number; height?: number }>
+] = [
   PRIORITY_ICON_MAP.green,
   PRIORITY_ICON_MAP.yellow,
   PRIORITY_ICON_MAP.orange,
   PRIORITY_ICON_MAP.red,
-];
+] as const;
 
 // PriorityIndex → 도메인 Priority 문자열 매핑
 export const PRIORITY_INDEX_TO_DOMAIN: Record<PriorityIndex, Priority> = {

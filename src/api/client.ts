@@ -10,10 +10,46 @@ export const apiClient = axios.create({
   timeout: 10000,
 });
 
-apiClient.interceptors.request.use((config) => {
+let tokenLoadPromise: Promise<void> | null = null;
+
+const ensureTokenLoaded = async () => {
+  if (!tokenLoadPromise) {
+    tokenLoadPromise = useAuthStore.getState().loadToken();
+  }
+  await tokenLoadPromise;
+};
+
+apiClient.interceptors.request.use(async (config) => {
+  await ensureTokenLoaded();
   const token = useAuthStore.getState().token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        await useAuthStore.getState().loadToken();
+        const token = useAuthStore.getState().token;
+
+        if (token) {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return apiClient(originalRequest);
+        }
+      } catch (e) {
+        // Token refresh failed, user needs to re-authenticate
+        await useAuthStore.getState().clearToken();
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);

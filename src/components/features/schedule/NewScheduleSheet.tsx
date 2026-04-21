@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
-import { useState } from "react";
+import { useState, RefObject } from "react";
 import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 import { colors } from "@constants/colors";
@@ -18,7 +18,7 @@ import { createTask, TaskPriority } from "@api/schedules";
 import type { PriorityIndex } from "@/types/schedule";
 
 interface NewScheduleSheetProps {
-  bottomSheetRef: React.RefObject<BottomSheet | null>;
+  bottomSheetRef: RefObject<BottomSheet | null>;
   onClose?: () => void;
 }
 
@@ -38,6 +38,7 @@ const toApiTime = (d: Date) =>
 export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewScheduleSheetProps) {
   const close = () => bottomSheetRef.current?.close();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     form,
     isDateMode,
@@ -164,8 +165,10 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
 
           <TouchableOpacity
             style={styles.submitButton}
-            disabled={isLoading}
+            disabled={isLoading || isSubmitting}
             onPress={async () => {
+              if (isSubmitting) return;
+
               if (!form.title) {
                 Alert.alert("입력 오류", "제목을 입력해주세요.");
                 return;
@@ -174,6 +177,8 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
                 Alert.alert("입력 오류", "종료 시간은 시작 시간보다 늦어야 합니다.");
                 return;
               }
+
+              setIsSubmitting(true);
               setIsLoading(true);
               try {
                 await createTask({
@@ -188,6 +193,7 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
                 Alert.alert("일정 생성 실패", e.message);
               } finally {
                 setIsLoading(false);
+                setIsSubmitting(false);
               }
             }}
           >
