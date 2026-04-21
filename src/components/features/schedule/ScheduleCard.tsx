@@ -2,13 +2,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import { colors } from "@constants/colors";
 import { typography } from "@constants/typography";
+import { PRIORITY_ICON_MAP, CATEGORY_ICON_MAP } from "@constants/schedule";
 import { CategoryType, Priority } from "@/types/schedule";
-import StarRed from "@assets/icons/star-red.svg";
-import StarOrange from "@assets/icons/star-orange.svg";
-import StarYellow from "@assets/icons/star-yellow.svg";
-import StarGreen from "@assets/icons/star-green.svg";
-import CategoryWork from "@assets/icons/category-work.svg";
-import CategoryPersonal from "@assets/icons/category-personal.svg";
 
 interface ScheduleCardProps {
   title: string;
@@ -20,18 +15,6 @@ interface ScheduleCardProps {
   onPress?: () => void;
 }
 
-const PRIORITY_ICONS = {
-  red: <StarRed width={12} height={12} />,
-  orange: <StarOrange width={12} height={12} />,
-  yellow: <StarYellow width={12} height={12} />,
-  green: <StarGreen width={12} height={12} />,
-};
-
-const CATEGORY_ICONS = {
-  work: <CategoryWork width={36} height={36} />,
-  personal: <CategoryPersonal width={36} height={36} />,
-};
-
 export default function ScheduleCard({
   title,
   category,
@@ -41,6 +24,9 @@ export default function ScheduleCard({
   priority,
   onPress,
 }: ScheduleCardProps) {
+  const PriorityIcon = PRIORITY_ICON_MAP[priority];
+  const CategoryIcon = CATEGORY_ICON_MAP[categoryType];
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.left}>
@@ -49,13 +35,15 @@ export default function ScheduleCard({
           <Text style={styles.category}>{category}</Text>
         </View>
         <View style={styles.timeRow}>
-          {PRIORITY_ICONS[priority]}
+          <PriorityIcon width={12} height={12} />
           <Text style={styles.time}>
             {startTime} - {endTime}
           </Text>
         </View>
       </View>
-      <View style={styles.categoryIcon}>{CATEGORY_ICONS[categoryType]}</View>
+      <View style={styles.categoryIcon}>
+        <CategoryIcon width={36} height={36} />
+      </View>
     </TouchableOpacity>
   );
 }

@@ -2,11 +2,34 @@ import StarGreen from "@assets/icons/star-green.svg";
 import StarYellow from "@assets/icons/star-yellow.svg";
 import StarOrange from "@assets/icons/star-orange.svg";
 import StarRed from "@assets/icons/star-red.svg";
+import CategoryWork from "@assets/icons/category-work.svg";
+import CategoryPersonal from "@assets/icons/category-personal.svg";
+import type { ComponentType } from "react";
 import { Dimensions } from "react-native";
+import type { CategoryType, Priority } from "@/types/schedule";
 
 // Priority Slider
 export const PRIORITY_LEVELS = [0, 1 / 3, 2 / 3, 1] as const;
-export const PRIORITY_ICONS = [StarGreen, StarYellow, StarOrange, StarRed];
+
+export const PRIORITY_ICON_MAP: Record<Priority, ComponentType<{ width?: number; height?: number }>> = {
+  green: StarGreen,
+  yellow: StarYellow,
+  orange: StarOrange,
+  red: StarRed,
+};
+
+// Derived array for index-based access: HOLD(0)→green … HIGHEST(3)→red
+export const PRIORITY_ICONS = [
+  PRIORITY_ICON_MAP.green,
+  PRIORITY_ICON_MAP.yellow,
+  PRIORITY_ICON_MAP.orange,
+  PRIORITY_ICON_MAP.red,
+];
+
+export const CATEGORY_ICON_MAP: Record<CategoryType, ComponentType<{ width?: number; height?: number }>> = {
+  work: CategoryWork,
+  personal: CategoryPersonal,
+};
 export const THUMB_SIZE = 24;
 export const DOT_SIZE = 8;
 
