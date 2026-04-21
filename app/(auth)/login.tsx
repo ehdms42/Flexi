@@ -6,12 +6,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 
 import { useRouter } from "expo-router";
 
 import { colors } from "@constants/colors";
 import { fontFamily, typography } from "@constants/typography";
+import { login } from "@api/users";
+import { useAuthStore } from "@stores/authStore";
 import GoogleIcon from "../../assets/icons/google-icon.svg";
 import OpenEyes from "../../assets/icons/open-eyes.svg";
 import CloseEyes from "../../assets/icons/close-eyes.svg";
@@ -21,6 +25,8 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const setToken = useAuthStore((s) => s.setToken);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,8 +78,31 @@ export default function LoginScreen() {
         </View>
 
         {/* 로그인 버튼 */}
-        <TouchableOpacity style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>로그인</Text>
+        <TouchableOpacity
+          style={styles.loginButton}
+          disabled={isLoading}
+          onPress={async () => {
+            if (!email || !password) {
+              Alert.alert("입력 오류", "아이디와 비밀번호를 입력해주세요.");
+              return;
+            }
+            setIsLoading(true);
+            try {
+              const { accessToken } = await login({ username: email, password });
+              await setToken(accessToken);
+              router.replace("/(app)");
+            } catch (e: any) {
+              Alert.alert("로그인 실패", e.message);
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        >
+          {isLoading ? (
+            <ActivityIndicator color={colors.gray[100]} />
+          ) : (
+            <Text style={styles.loginButtonText}>로그인</Text>
+          )}
         </TouchableOpacity>
 
         {/* 링크들 */}

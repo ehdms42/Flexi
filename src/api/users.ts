@@ -23,3 +23,20 @@ export const checkUsername = async (username: string): Promise<void> => {
     throw new Error(res.data.error?.message ?? "이미 사용 중인 아이디입니다.");
   }
 };
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  accessToken: string;
+}
+
+export const login = async (body: LoginRequest): Promise<LoginResponse> => {
+  const res = await apiClient.post<ApiResponse<LoginResponse>>("/v1/users/login", body);
+  if (res.data.result === "ERROR") {
+    throw new Error(res.data.error?.message ?? "로그인에 실패했습니다.");
+  }
+  return res.data.data!;
+};
