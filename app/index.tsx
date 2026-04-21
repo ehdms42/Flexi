@@ -31,11 +31,11 @@ export default function SplashScreen() {
   const goToNext = async () => {
     // const token = await SecureStore.getItemAsync('accessToken');
     // if (token) {
-    //   router.replace('/(app)');
+    //   router.replace('/');
     // } else {
-    //   router.replace('/(auth)/login');
+    //   router.replace('/login');
     // }
-    router.replace("/(auth)/login");
+    router.replace("/login");
   };
 
   useEffect(() => {

@@ -354,7 +354,7 @@ export default function RegisterScreen() {
                   email: `${email}@${emailDomain}`,
                 });
                 Alert.alert("회원가입 완료", "로그인 화면으로 이동합니다.", [
-                  { text: "확인", onPress: () => router.replace("/(auth)/login") },
+                  { text: "확인", onPress: () => router.replace("/login") },
                 ]);
               } catch (e: any) {
                 Alert.alert("회원가입 실패", e.message);

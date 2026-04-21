@@ -81,7 +81,7 @@ export default function FindIdScreen() {
     const passwordErr = validatePassword(password);
     const confirmErr = password !== passwordConfirm ? "mismatch" : "";
     setResetErrors({ password: passwordErr, confirm: confirmErr });
-    if (!passwordErr && !confirmErr) router.push("/(auth)/login");
+    if (!passwordErr && !confirmErr) router.push("/login");
   };
 
   const getDisabled = () => {
@@ -91,7 +91,7 @@ export default function FindIdScreen() {
 
   const handleSubmit = () => {
     if (tab === "id") {
-      step === "result" ? router.push("/(auth)/login") : handleIdSubmit();
+      step === "result" ? router.push("/login") : handleIdSubmit();
     } else {
       step === "result" ? handlePwReset() : handlePwNext();
     }

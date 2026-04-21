@@ -92,7 +92,7 @@ export default function LoginScreen() {
             try {
               const { accessToken } = await login({ username: email, password });
               await setToken(accessToken);
-              router.replace("/(app)");
+              router.replace("/");
             } catch (e: any) {
               Alert.alert("로그인 실패", e.message);
             } finally {
@@ -109,15 +109,15 @@ export default function LoginScreen() {
 
         {/* 링크들 */}
         <View style={styles.linkRow}>
-          <TouchableOpacity onPress={() => router.push("/(auth)/find-id")}>
+          <TouchableOpacity onPress={() => router.push("/find-id")}>
             <Text style={styles.linkText}>아이디 찾기</Text>
           </TouchableOpacity>
           <Text style={styles.linkDivider}>|</Text>
-          <TouchableOpacity onPress={() => router.push("/(auth)/find-id?tab=password")}>
+          <TouchableOpacity onPress={() => router.push("/find-id?tab=password")}>
             <Text style={styles.linkText}>비밀번호 찾기</Text>
           </TouchableOpacity>
           <Text style={styles.linkDivider}>|</Text>
-          <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
+          <TouchableOpacity onPress={() => router.push("/register")}>
             <Text style={styles.linkText}>회원가입</Text>
           </TouchableOpacity>
         </View>
