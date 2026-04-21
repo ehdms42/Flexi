@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Pressable, ScrollView } from "react-native";
 
 import { colors } from "@constants/colors";
 import { fontFamily } from "@constants/typography";
@@ -15,12 +15,12 @@ interface DrumColumnProps {
 function DrumColumn({ items, selectedIndex, onSelect, format }: DrumColumnProps) {
   const scrollRef = useRef<ScrollView>(null);
 
-  // Initial scroll position
-  useState(() => {
-    setTimeout(() => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
       scrollRef.current?.scrollTo({ y: selectedIndex * ITEM_HEIGHT, animated: false });
     }, 80);
-  });
+    return () => clearTimeout(timer);
+  }, [selectedIndex]);
 
   const handleMomentumEnd = (e: any) => {
     const idx = Math.max(
@@ -84,6 +84,17 @@ export default function CustomTimePicker({
   const pendingHour = useRef(value.getHours());
   const pendingMinute = useRef(Math.round(value.getMinutes() / 5) * 5);
 
+  useEffect(() => {
+    if (visible) {
+      const h = value.getHours();
+      const m = Math.round(value.getMinutes() / 5);
+      setHourIdx(h);
+      setMinuteIdx(m);
+      pendingHour.current = HOURS[h];
+      pendingMinute.current = MINUTES[m];
+    }
+  }, [visible]);
+
   const handleSelectHour = (idx: number) => {
     setHourIdx(idx);
     pendingHour.current = HOURS[idx];
@@ -96,13 +107,11 @@ export default function CustomTimePicker({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
-      <TouchableOpacity
+      <Pressable
         style={styles.overlay}
-        activeOpacity={1}
         onPress={() => onConfirm(pendingHour.current, pendingMinute.current)}
       >
-        <TouchableOpacity activeOpacity={1} onPress={() => {}}>
-          <View style={styles.card}>
+        <View style={styles.card} onStartShouldSetResponder={() => true}>
             <View style={styles.highlight} pointerEvents="none" />
             <View style={styles.columns}>
               <DrumColumn
@@ -120,8 +129,7 @@ export default function CustomTimePicker({
               />
             </View>
           </View>
-        </TouchableOpacity>
-      </TouchableOpacity>
+      </Pressable>
     </Modal>
   );
 }
