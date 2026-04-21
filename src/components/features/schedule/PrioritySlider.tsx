@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -17,11 +17,19 @@ interface PrioritySliderProps {
   onChange: (v: number) => void;
 }
 
+const valueToIndex = (v: number) =>
+  PRIORITY_LEVELS.reduce(
+    (best, curr, i) =>
+      Math.abs(curr - v) < Math.abs(PRIORITY_LEVELS[best] - v) ? i : best,
+    0
+  );
+
 export default function PrioritySlider({ value, onChange }: PrioritySliderProps) {
   const trackWidth = useSharedValue(0);
   const thumbOffset = useSharedValue(value);
   const startOffset = useSharedValue(value);
-  const [activeIndex, setActiveIndex] = useState(2);
+  const isDragging = useRef(false);
+  const [activeIndex, setActiveIndex] = useState(() => valueToIndex(value));
   const [containerWidth, setContainerWidth] = useState(0);
 
   const dotPositions =
@@ -32,11 +40,21 @@ export default function PrioritySlider({ value, onChange }: PrioritySliderProps)
         )
       : [];
 
+  useEffect(() => {
+    if (isDragging.current) return;
+    const idx = valueToIndex(value);
+    thumbOffset.value = withSpring(PRIORITY_LEVELS[idx], { damping: 20, stiffness: 300 });
+    setActiveIndex(idx);
+  }, [value]);
+
+  const setDragging = (v: boolean) => { isDragging.current = v; };
+
   const pan = Gesture.Pan()
     .activeOffsetX([-5, 5])
     .failOffsetY([-10, 10])
     .onBegin(() => {
       startOffset.value = thumbOffset.value;
+      runOnJS(setDragging)(true);
     })
     .onUpdate((e) => {
       thumbOffset.value = Math.min(
@@ -55,6 +73,7 @@ export default function PrioritySlider({ value, onChange }: PrioritySliderProps)
       thumbOffset.value = withSpring(nearest, { damping: 20, stiffness: 300 });
       runOnJS(setActiveIndex)(idx);
       runOnJS(onChange)(nearest);
+      runOnJS(setDragging)(false);
     });
 
   const thumbStyle = useAnimatedStyle(() => ({
