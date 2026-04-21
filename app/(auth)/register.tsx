@@ -317,6 +317,19 @@ export default function RegisterScreen() {
                   <Text style={styles.domainItemText}>{domain}</Text>
                 </Pressable>
               ))}
+              <Pressable
+                style={({ pressed }) => [
+                  styles.domainItem,
+                  pressed && { backgroundColor: "#00000008" },
+                ]}
+                onPress={() => {
+                  setIsDomainDirect(true);
+                  setEmailDomain("");
+                  setShowDomainPicker(false);
+                }}
+              >
+                <Text style={[styles.domainItemText, { color: colors.gray[50] }]}>직접 입력</Text>
+              </Pressable>
             </View>
           )}
 
@@ -346,7 +359,7 @@ export default function RegisterScreen() {
           {errors.email ? (
             <View style={styles.errorRow}>
               <ErrorImg width={14} height={14} />
-              <Text style={styles.errorText}>이메일 주소를 확인해주세요.</Text>
+              <Text style={styles.errorText}>{errors.email}</Text>
             </View>
           ) : null}
           {errors.verifyCode ? (
