@@ -88,6 +88,7 @@ export default function CustomDatePicker({
     const d = new Date(viewYear, viewMonth, day);
     setSelected(d);
     onConfirm(d);
+    onDismiss();
   };
 
   return (
