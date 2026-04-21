@@ -3,10 +3,13 @@ import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useAuthStore } from '@stores/authStore';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const loadToken = useAuthStore((s) => s.loadToken);
   const [fontsLoaded, fontError] = useFonts({
     'Pretendard-Bold': require('../assets/fonts/Pretendard-Bold.ttf'),
     'Pretendard-ExtraBold': require('../assets/fonts/Pretendard-ExtraBold.ttf'),
@@ -21,6 +24,10 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    loadToken();
+  }, []);
+
+  useEffect(() => {
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
     }
@@ -30,5 +37,9 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }} />
+    </GestureHandlerRootView>
+  );
 }
