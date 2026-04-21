@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { colors } from "@constants/colors";
 import { fontFamily, typography } from "@constants/typography";
 import { login } from "@api/users";
+import { googleLogin } from "@api/auth";
 import { useAuthStore } from "@stores/authStore";
 import GoogleIcon from "../../assets/icons/google-icon.svg";
 import OpenEyes from "../../assets/icons/open-eyes.svg";
@@ -26,6 +27,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const setToken = useAuthStore((s) => s.setToken);
 
   return (
@@ -128,9 +130,23 @@ export default function LoginScreen() {
         </View>
 
         {/* 구글 로그인 */}
-        <TouchableOpacity style={styles.googleButton}>
-          <GoogleIcon width={24} height={24} />
-          <Text style={styles.googleText}>구글로 로그인</Text>
+        <TouchableOpacity
+          style={styles.googleButton}
+          disabled={isGoogleLoading}
+          onPress={async () => {
+            // TODO: Google Sign-In SDK에서 idToken 받아오는 로직 추가 필요
+            // const { idToken } = await GoogleSignin.signIn();
+            Alert.alert("준비 중", "Google Sign-In SDK 연동 후 사용 가능합니다.");
+          }}
+        >
+          {isGoogleLoading ? (
+            <ActivityIndicator color={colors.primary.black} />
+          ) : (
+            <>
+              <GoogleIcon width={24} height={24} />
+              <Text style={styles.googleText}>구글로 로그인</Text>
+            </>
+          )}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
