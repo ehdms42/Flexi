@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 
-import * as SecureStore from "expo-secure-store";
 import { useRouter } from "expo-router";
 import Animated, {
   useAnimatedStyle,
@@ -28,13 +27,8 @@ export default function SplashScreen() {
     ],
   }));
 
-  const goToNext = async () => {
-    // const token = await SecureStore.getItemAsync('accessToken');
-    // if (token) {
-    //   router.replace('/');
-    // } else {
-    //   router.replace('/login');
-    // }
+  const goToNext = () => {
+    // TODO: Sprint 2 - 토큰 유무에 따라 홈(/) 또는 로그인(/login)으로 분기
     router.replace("/login");
   };
 
