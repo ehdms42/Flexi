@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import { useRouter } from "expo-router";
 import Animated, {
+  cancelAnimation,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -43,10 +44,15 @@ export default function SplashScreen() {
         duration: 2000,
         easing: Easing.out(Easing.exp),
       },
-      () => {
-        runOnJS(goToNext)();
+      (finished) => {
+        if (finished) runOnJS(goToNext)();
       }
     );
+
+    return () => {
+      cancelAnimation(translateX);
+      cancelAnimation(rotate);
+    };
   }, []);
 
   return (
