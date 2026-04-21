@@ -1,4 +1,4 @@
-export const colors = {
+const palette = {
   primary: {
     default: "#FF4000",
     black: "#0A0A0A",
@@ -27,16 +27,19 @@ export const colors = {
     95: "#EAEAEA",
     100: "#FFFFFF",
   },
+} as const;
 
+export const colors = {
+  ...palette,
   semantic: {
-    labelAlternative: "#5C5C5C",
+    labelAlternative: palette.gray[40],
     backgroundStrong: "#EDEBE8",
     timelineLabel: "#C4C4C4",
-    dimBackground: "#000000CC",
+    dimBackground: `${palette.gray[0]}CC` as const,
     inputPlaceholder: "#D7D7D7",
     inputLabel: "#514F5E",
     inputValue: "#8B8B8B",
-    sliderLabel: "#8A8A8A",
+    sliderLabel: palette.gray[50],
     memoPlaeholder: "#C4C4C4",
   },
 } as const;
