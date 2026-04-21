@@ -38,14 +38,13 @@ export default function EmailDomainInput({
       />
       <Text style={styles.atSign}>@</Text>
       <View style={styles.pickerWrapper}>
-        <TouchableOpacity
+        <View
           style={[
             styles.input,
             styles.pickerButton,
             showPicker && styles.pickerActive,
             hasError && styles.inputError,
           ]}
-          onPress={() => setShowPicker((v) => !v)}
         >
           {isDirect ? (
             <TextInput
@@ -55,17 +54,22 @@ export default function EmailDomainInput({
               value={domain}
               onChangeText={onDomainChange}
               autoCapitalize="none"
+              editable={!showPicker}
             />
           ) : (
-            <Text style={styles.domainText}>{domain}</Text>
+            <TouchableOpacity style={styles.flex} onPress={() => setShowPicker((v) => !v)}>
+              <Text style={styles.domainText}>{domain}</Text>
+            </TouchableOpacity>
           )}
-          <RegisterArrow
-            width={16}
-            height={16}
-            color={showPicker ? colors.primary.black : colors.gray[60]}
-            style={{ transform: [{ rotate: showPicker ? "180deg" : "0deg" }] }}
-          />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowPicker((v) => !v)} hitSlop={8}>
+            <RegisterArrow
+              width={16}
+              height={16}
+              color={showPicker ? colors.primary.black : colors.gray[60]}
+              style={{ transform: [{ rotate: showPicker ? "180deg" : "0deg" }] }}
+            />
+          </TouchableOpacity>
+        </View>
         {showPicker && (
           <View style={styles.dropdown}>
             <TouchableOpacity
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
+    justifyContent: "center",
   },
   input: {
     backgroundColor: colors.gray[100],
