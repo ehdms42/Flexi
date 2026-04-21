@@ -40,7 +40,7 @@ export const colors = {
     inputLabel: "#514F5E",
     inputValue: "#8B8B8B",
     sliderLabel: palette.gray[50],
-    memoPlaeholder: "#C4C4C4",
+    memoPlaceholder: "#C4C4C4",
   },
 } as const;
 
