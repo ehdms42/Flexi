@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 
 import Animated, {
@@ -120,7 +121,9 @@ export default function HomeScreen() {
 
         {/* 딤 배경 */}
         {isMenuOpen && (
-          <Animated.View style={[styles.dim, dimStyle]} onTouchEnd={toggleMenu} />
+          <Pressable style={styles.dimPressable} onPress={toggleMenu} accessibilityLabel="메뉴 닫기">
+            <Animated.View style={[styles.dim, dimStyle]} />
+          </Pressable>
         )}
 
         {/* 플로팅 버튼 */}
@@ -211,12 +214,15 @@ const styles = StyleSheet.create({
     ...typography.body8,
     color: colors.gray[40],
   },
-  dim: {
+  dimPressable: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  dim: {
+    flex: 1,
     backgroundColor: colors.semantic.dimBackground,
   },
   floatingContainer: {
