@@ -82,7 +82,7 @@ export default function LoginScreen() {
             <Text style={styles.linkText}>아이디 찾기</Text>
           </TouchableOpacity>
           <Text style={styles.linkDivider}>|</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/(auth)/find-id?tab=password")}>
             <Text style={styles.linkText}>비밀번호 찾기</Text>
           </TouchableOpacity>
           <Text style={styles.linkDivider}>|</Text>
