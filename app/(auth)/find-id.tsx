@@ -505,14 +505,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButtonDisabled: {
-    backgroundColor: colors.primary.black,
+    backgroundColor: colors.gray[80],
   },
   submitText: {
     fontFamily: fontFamily.pretendard.bold,
     fontSize: 16,
   },
   submitTextDisabled: {
-    color: colors.gray[40],
+    color: colors.gray[50],
   },
   submitTextActive: {
     color: colors.gray[100],
