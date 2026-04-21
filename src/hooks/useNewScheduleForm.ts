@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CategoryType, DatePickerMode, NewScheduleForm } from "@/types/schedule";
 
-const initialForm: NewScheduleForm = {
+const makeInitialForm = (): NewScheduleForm => ({
   title: "",
   location: "",
   priority: 2 / 3,
@@ -9,10 +9,10 @@ const initialForm: NewScheduleForm = {
   startDate: new Date(),
   endDate: new Date(),
   memo: "",
-};
+});
 
 export function useNewScheduleForm() {
-  const [form, setForm] = useState<NewScheduleForm>(initialForm);
+  const [form, setForm] = useState<NewScheduleForm>(makeInitialForm);
   const [pickerMode, setPickerMode] = useState<DatePickerMode>(null);
 
   const setTitle = (title: string) => setForm((prev) => ({ ...prev, title }));
@@ -48,6 +48,11 @@ export function useNewScheduleForm() {
     setPickerMode(null);
   };
 
+  const reset = () => {
+    setForm(makeInitialForm());
+    setPickerMode(null);
+  };
+
   const isDateMode = pickerMode === "startDate" || pickerMode === "endDate";
   const isTimeMode = pickerMode === "startTime" || pickerMode === "endTime";
   const datePickerValue = pickerMode === "startDate" ? form.startDate : form.endDate;
@@ -68,5 +73,6 @@ export function useNewScheduleForm() {
     toggleCategory,
     handleDateConfirm,
     handleTimeConfirm,
+    reset,
   };
 }

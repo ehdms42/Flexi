@@ -52,6 +52,7 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
     toggleCategory,
     handleDateConfirm,
     handleTimeConfirm,
+    reset,
   } = useNewScheduleForm();
 
   return (
@@ -61,7 +62,7 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
         index={-1}
         snapPoints={["89%"]}
         enablePanDownToClose
-        onClose={onClose}
+        onClose={() => { reset(); onClose?.(); }}
         backgroundStyle={styles.sheetBackground}
         handleIndicatorStyle={{ height: 0 }}
         backdropComponent={(props) => (
