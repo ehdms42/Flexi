@@ -19,7 +19,7 @@ import { PRIORITY_LEVELS } from "@constants/schedule";
 
 interface NewScheduleSheetProps {
   bottomSheetRef: React.RefObject<BottomSheet | null>;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const PRIORITY_MAP: Record<number, TaskPriority> = {
@@ -36,6 +36,7 @@ const toApiTime = (d: Date) =>
   `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:00`;
 
 export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewScheduleSheetProps) {
+  const close = () => bottomSheetRef.current?.close();
   const [isLoading, setIsLoading] = useState(false);
   const {
     form,
@@ -77,7 +78,7 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
-            <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={close}>
               <ArrowLeft width={36} height={36} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>새 일정 추가</Text>
@@ -177,7 +178,7 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
                   endTime: toApiTime(form.endDate),
                   priority: PRIORITY_MAP[priorityIndex >= 0 ? priorityIndex : 2],
                 });
-                onClose();
+                close();
               } catch (e: any) {
                 Alert.alert("일정 생성 실패", e.message);
               } finally {

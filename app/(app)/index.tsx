@@ -157,10 +157,7 @@ export default function HomeScreen() {
         </View>
       </SafeAreaView>
 
-      <NewScheduleSheet
-        bottomSheetRef={newScheduleSheetRef}
-        onClose={() => newScheduleSheetRef.current?.close()}
-      />
+      <NewScheduleSheet bottomSheetRef={newScheduleSheetRef} />
     </>
   );
 }
