@@ -42,6 +42,7 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
     form,
     isDateMode,
     isTimeMode,
+    isValidRange,
     datePickerValue,
     timePickerValue,
     setPickerMode,
@@ -167,6 +168,10 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
             onPress={async () => {
               if (!form.title) {
                 Alert.alert("입력 오류", "제목을 입력해주세요.");
+                return;
+              }
+              if (!isValidRange) {
+                Alert.alert("입력 오류", "종료 시간은 시작 시간보다 늦어야 합니다.");
                 return;
               }
               const priorityIndex = PRIORITY_LEVELS.indexOf(form.priority as typeof PRIORITY_LEVELS[number]);

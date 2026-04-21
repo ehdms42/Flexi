@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { CategoryType, DatePickerMode, NewScheduleForm } from "@/types/schedule";
 
-const makeInitialForm = (): NewScheduleForm => ({
-  title: "",
-  location: "",
-  priority: 2 / 3,
-  category: "work",
-  startDate: new Date(),
-  endDate: new Date(),
-  memo: "",
-});
+const DEFAULT_DURATION_MS = 60 * 60 * 1000; // 1시간
+
+const makeInitialForm = (): NewScheduleForm => {
+  const startDate = new Date();
+  const endDate = new Date(startDate.getTime() + DEFAULT_DURATION_MS);
+  return { title: "", location: "", priority: 2 / 3, category: "work", startDate, endDate, memo: "" };
+};
 
 export function useNewScheduleForm() {
   const [form, setForm] = useState<NewScheduleForm>(makeInitialForm);
@@ -26,14 +24,25 @@ export function useNewScheduleForm() {
       category: (prev.category === "work" ? "personal" : "work") as CategoryType,
     }));
 
+  const clampEnd = (startDate: Date, endDate: Date): Date =>
+    endDate <= startDate
+      ? new Date(startDate.getTime() + DEFAULT_DURATION_MS)
+      : endDate;
+
   const handleDateConfirm = (date: Date) => {
     const applyDate = (prev: Date) => {
       const next = new Date(date);
       next.setHours(prev.getHours(), prev.getMinutes());
       return next;
     };
-    if (pickerMode === "startDate") setForm((prev) => ({ ...prev, startDate: applyDate(prev.startDate) }));
-    else if (pickerMode === "endDate") setForm((prev) => ({ ...prev, endDate: applyDate(prev.endDate) }));
+    if (pickerMode === "startDate") {
+      setForm((prev) => {
+        const startDate = applyDate(prev.startDate);
+        return { ...prev, startDate, endDate: clampEnd(startDate, prev.endDate) };
+      });
+    } else if (pickerMode === "endDate") {
+      setForm((prev) => ({ ...prev, endDate: applyDate(prev.endDate) }));
+    }
     setPickerMode(null);
   };
 
@@ -43,8 +52,14 @@ export function useNewScheduleForm() {
       next.setHours(hour, minute);
       return next;
     };
-    if (pickerMode === "startTime") setForm((prev) => ({ ...prev, startDate: applyTime(prev.startDate) }));
-    else if (pickerMode === "endTime") setForm((prev) => ({ ...prev, endDate: applyTime(prev.endDate) }));
+    if (pickerMode === "startTime") {
+      setForm((prev) => {
+        const startDate = applyTime(prev.startDate);
+        return { ...prev, startDate, endDate: clampEnd(startDate, prev.endDate) };
+      });
+    } else if (pickerMode === "endTime") {
+      setForm((prev) => ({ ...prev, endDate: applyTime(prev.endDate) }));
+    }
     setPickerMode(null);
   };
 
@@ -52,6 +67,8 @@ export function useNewScheduleForm() {
     setForm(makeInitialForm());
     setPickerMode(null);
   };
+
+  const isValidRange = form.endDate > form.startDate;
 
   const isDateMode = pickerMode === "startDate" || pickerMode === "endDate";
   const isTimeMode = pickerMode === "startTime" || pickerMode === "endTime";
@@ -64,6 +81,7 @@ export function useNewScheduleForm() {
     setPickerMode,
     isDateMode,
     isTimeMode,
+    isValidRange,
     datePickerValue,
     timePickerValue,
     setTitle,
