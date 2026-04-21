@@ -15,7 +15,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Menu from '@assets/icons/menu.svg';
 import Bell from '@assets/icons/bell.svg';
@@ -84,8 +83,8 @@ export default function HomeScreen() {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView style={styles.container}>
+    <>
+    <SafeAreaView style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* 헤더 */}
           <View style={styles.header}>
@@ -159,7 +158,7 @@ export default function HomeScreen() {
         bottomSheetRef={newScheduleSheetRef}
         onClose={() => newScheduleSheetRef.current?.close()}
       />
-    </GestureHandlerRootView>
+    </>
   );
 }
 
