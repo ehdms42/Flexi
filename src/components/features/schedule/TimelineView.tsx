@@ -5,16 +5,21 @@ import { typography } from "@constants/typography";
 import { Schedule } from "@/types/schedule";
 import ScheduleCard from "./ScheduleCard";
 
+// TODO: 목업용 고정 범위(9~12시). 실제 API 연동 후 스케줄 시간대에 맞춰 동적으로 확장 필요.
 const TIMELINE_START_HOUR = 9;
 const TIMELINE_END_HOUR = 12;
+
+const formatHourLabel = (h: number) => {
+  const period = h < 12 ? "AM" : "PM";
+  const display = h % 12 === 0 ? 12 : h % 12;
+  return `${display}:00 ${period}`;
+};
 
 const HOURS = Array.from(
   { length: TIMELINE_END_HOUR - TIMELINE_START_HOUR + 1 },
   (_, i) => {
     const h = TIMELINE_START_HOUR + i;
-    const period = h < 12 ? "AM" : "PM";
-    const display = h > 12 ? h - 12 : h;
-    return { label: `${display}:00 ${period}`, hour: h };
+    return { label: formatHourLabel(h), hour: h };
   }
 );
 
