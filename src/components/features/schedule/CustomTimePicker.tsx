@@ -107,11 +107,9 @@ export default function CustomTimePicker({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
-      <Pressable
-        style={styles.overlay}
-        onPress={() => onConfirm(pendingHour.current, pendingMinute.current)}
-      >
+      <Pressable style={styles.overlay} onPress={onDismiss}>
         <View style={styles.card} onStartShouldSetResponder={() => true}>
+          <View style={styles.columnsArea}>
             <View style={styles.highlight} pointerEvents="none" />
             <View style={styles.columns}>
               <DrumColumn
@@ -129,6 +127,23 @@ export default function CustomTimePicker({
               />
             </View>
           </View>
+          <View style={styles.actions}>
+            <TouchableOpacity
+              style={styles.actionBtn}
+              onPress={onDismiss}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.actionTextCancel}>취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.actionBtn}
+              onPress={() => onConfirm(pendingHour.current, pendingMinute.current)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.actionTextConfirm}>확인</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </Pressable>
     </Modal>
   );
@@ -145,9 +160,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray[100],
     borderRadius: 12,
     width: TP_CARD_W,
+    overflow: "hidden",
+  },
+  columnsArea: {
     height: TP_CARD_H,
     overflow: "hidden",
-    justifyContent: "center",
   },
   highlight: {
     position: "absolute",
@@ -162,6 +179,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 32,
     height: TP_CARD_H,
+  },
+  actions: {
+    flexDirection: "row",
+    borderTopWidth: 1,
+    borderTopColor: colors.gray[90],
+  },
+  actionBtn: {
+    flex: 1,
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  actionTextCancel: {
+    fontFamily: fontFamily.pretendard.medium,
+    fontSize: 16,
+    lineHeight: 16,
+    color: colors.gray[40],
+  },
+  actionTextConfirm: {
+    fontFamily: fontFamily.pretendard.bold,
+    fontSize: 16,
+    lineHeight: 16,
+    color: colors.primary.default,
   },
   drumItem: {
     height: ITEM_HEIGHT,

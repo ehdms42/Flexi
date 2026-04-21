@@ -2,6 +2,7 @@ import { apiClient } from "./client";
 import { ApiResponse } from "@/types/api";
 
 export interface SignUpRequest {
+  
   username: string;
   password: string;
   passwordConfirmation: string;
