@@ -8,6 +8,8 @@ import {
   SafeAreaView,
   ScrollView,
   Pressable,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 
 import { useRouter } from "expo-router";
@@ -18,6 +20,7 @@ import ErrorImg from "@assets/icons/error.svg";
 import OpenEyes from "@assets/icons/open-eyes.svg";
 import CloseEyes from "@assets/icons/close-eyes.svg";
 import { colors } from "@constants/colors";
+import { signUp } from "@api/users";
 import { fontFamily, typography } from "@constants/typography";
 
 const EMAIL_DOMAINS = [
@@ -48,6 +51,7 @@ export default function RegisterScreen() {
     email: "",
     verifyCode: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateUsername = (value: string) => {
     if (!value || value.length < 4 || value.length > 12) {
@@ -305,25 +309,51 @@ export default function RegisterScreen() {
         <View style={styles.submitArea}>
           <TouchableOpacity
             style={styles.submitButton}
-            onPress={() => {
+            disabled={isLoading}
+            onPress={async () => {
               const usernameError = validateUsername(username);
               const passwordError = validatePassword(password);
+              const emailError = email && emailDomain ? "" : "error";
+              const verifyCodeError = verifyCode ? "" : "error";
               setErrors({
                 username: usernameError,
                 password: passwordError,
-                email: email && emailDomain ? "" : "error",
-                verifyCode: verifyCode ? "" : "error",
+                email: emailError,
+                verifyCode: verifyCodeError,
               });
+
+              if (usernameError || passwordError || emailError || verifyCodeError) return;
+
+              setIsLoading(true);
+              try {
+                await signUp({
+                  username,
+                  password,
+                  passwordConfirmation: passwordConfirm,
+                  email: `${email}@${emailDomain}`,
+                });
+                Alert.alert("회원가입 완료", "로그인 화면으로 이동합니다.", [
+                  { text: "확인", onPress: () => router.replace("/(auth)/login") },
+                ]);
+              } catch (e: any) {
+                Alert.alert("회원가입 실패", e.message);
+              } finally {
+                setIsLoading(false);
+              }
             }}
           >
-            <Text
-              style={[
-                styles.submitText,
-                { color: isFormValid ? colors.gray[100] : "#5C5C5C" },
-              ]}
-            >
-              완료
-            </Text>
+            {isLoading ? (
+              <ActivityIndicator color={colors.gray[100]} />
+            ) : (
+              <Text
+                style={[
+                  styles.submitText,
+                  { color: isFormValid ? colors.gray[100] : "#5C5C5C" },
+                ]}
+              >
+                완료
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>
