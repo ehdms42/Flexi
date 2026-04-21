@@ -20,9 +20,8 @@ export interface Schedule {
   title: string;
   category: string;
   categoryType: CategoryType;
-  startTime: string;
-  endTime: string;
-  hour: number;
+  startTime: string; // "HH:mm"
+  endTime: string;   // "HH:mm"
   priority: Priority;
 }
 

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { colors } from "@constants/colors";
 import { typography } from "@constants/typography";
 import { Schedule } from "@/types/schedule";
+import { hourFromTime } from "@/utils/dateFormat";
 import ScheduleCard from "./ScheduleCard";
 
 // TODO: 목업용 고정 범위(9~12시). 실제 API 연동 후 스케줄 시간대에 맞춰 동적으로 확장 필요.
@@ -31,7 +32,7 @@ export default function TimelineView({ schedules }: TimelineViewProps) {
   return (
     <View style={styles.container}>
       {HOURS.map(({ label, hour }) => {
-        const hourSchedules = schedules.filter((s) => s.hour === hour);
+        const hourSchedules = schedules.filter((s) => hourFromTime(s.startTime) === hour);
         return (
           <View key={label} style={styles.row}>
             <View style={styles.hourRow}>

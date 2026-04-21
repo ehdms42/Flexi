@@ -18,7 +18,6 @@ export const MOCK_SCHEDULES: Schedule[] = [
     categoryType: "work",
     startTime: "10:00",
     endTime: "11:00",
-    hour: 10,
     priority: "red",
   },
 ];
