@@ -54,10 +54,10 @@ const getWeekDates = (date: Date): WeekDay[] => {
   });
 };
 
-const today = new Date();
-
 export default function HomeScreen() {
-  const [selectedDate, setSelectedDate] = useState(toIsoDate(today));
+  const todayRef = useRef(new Date());
+  const today = todayRef.current;
+  const [selectedDate, setSelectedDate] = useState(() => toIsoDate(today));
   const [weekDates] = useState<WeekDay[]>(() => getWeekDates(today));
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const newScheduleSheetRef = useRef<BottomSheet>(null);
