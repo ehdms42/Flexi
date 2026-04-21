@@ -44,9 +44,10 @@ export const CELL_SIZE = Math.floor(INNER_WIDTH / 7);
 export const CIRCLE_SIZE = Math.min(CELL_SIZE, 44);
 export const WEEK_DAYS = ["월", "화", "수", "목", "금", "토", "일"] as const;
 
-// Custom Time Picker
-export const TP_CARD_W = 353;
-export const TP_CARD_H = 204;
-export const ITEM_HEIGHT = Math.floor(TP_CARD_H / 5);
+// Custom Time Picker — 너비는 화면 폭에서 파생, 높이는 5의 배수로 고정(스냅 오차 방지)
+const TP_CARD_MARGIN = 11;
+export const TP_CARD_W = SCREEN_WIDTH - TP_CARD_MARGIN * 2;
+export const TP_CARD_H = 200;
+export const ITEM_HEIGHT = TP_CARD_H / 5; // 200 / 5 = 40, 정수 보장
 export const HOURS = Array.from({ length: 24 }, (_, i) => i);
 export const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5);
