@@ -4,10 +4,12 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useAuthStore } from '@stores/authStore';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const loadToken = useAuthStore((s) => s.loadToken);
   const [fontsLoaded, fontError] = useFonts({
     'Pretendard-Bold': require('../assets/fonts/Pretendard-Bold.ttf'),
     'Pretendard-ExtraBold': require('../assets/fonts/Pretendard-ExtraBold.ttf'),
@@ -20,6 +22,10 @@ export default function RootLayout() {
     'Urbanist-Regular': require('../assets/fonts/Urbanist-Regular.ttf'),
     'Urbanist-SemiBold': require('../assets/fonts/Urbanist-SemiBold.ttf'),
   });
+
+  useEffect(() => {
+    loadToken();
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
