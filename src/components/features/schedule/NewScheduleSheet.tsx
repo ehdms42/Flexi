@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { useState } from "react";
 import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 
 import { colors } from "@constants/colors";
@@ -13,13 +14,29 @@ import CustomDatePicker from "./CustomDatePicker";
 import CustomTimePicker from "./CustomTimePicker";
 import { useNewScheduleForm } from "@/hooks/useNewScheduleForm";
 import { formatDate, formatTime } from "@/utils/dateFormat";
+import { createTask, TaskPriority } from "@api/schedules";
+import { PRIORITY_LEVELS } from "@constants/schedule";
 
 interface NewScheduleSheetProps {
   bottomSheetRef: React.RefObject<BottomSheet | null>;
   onClose: () => void;
 }
 
+const PRIORITY_MAP: Record<number, TaskPriority> = {
+  0: "HOLD",
+  1: "NORMAL",
+  2: "HIGH",
+  3: "HIGHEST",
+};
+
+const toApiDate = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+const toApiTime = (d: Date) =>
+  `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:00`;
+
 export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewScheduleSheetProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     form,
     isDateMode,
@@ -142,8 +159,37 @@ export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewSchedul
             </View>
           </View>
 
-          <TouchableOpacity style={styles.submitButton}>
-            <Text style={styles.submitText}>완료</Text>
+          <TouchableOpacity
+            style={styles.submitButton}
+            disabled={isLoading}
+            onPress={async () => {
+              if (!form.title) {
+                Alert.alert("입력 오류", "제목을 입력해주세요.");
+                return;
+              }
+              const priorityIndex = PRIORITY_LEVELS.indexOf(form.priority as typeof PRIORITY_LEVELS[number]);
+              setIsLoading(true);
+              try {
+                await createTask({
+                  date: toApiDate(form.startDate),
+                  title: form.title,
+                  startTime: toApiTime(form.startDate),
+                  endTime: toApiTime(form.endDate),
+                  priority: PRIORITY_MAP[priorityIndex >= 0 ? priorityIndex : 2],
+                });
+                onClose();
+              } catch (e: any) {
+                Alert.alert("일정 생성 실패", e.message);
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+          >
+            {isLoading ? (
+              <ActivityIndicator color={colors.gray[100]} />
+            ) : (
+              <Text style={styles.submitText}>완료</Text>
+            )}
           </TouchableOpacity>
         </BottomSheetScrollView>
       </BottomSheet>

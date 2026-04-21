@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import { ApiResponse } from "@types/api";
+import { ApiResponse } from "../types/api";
 
 export interface GoogleLoginResponse {
   accessToken: string;
