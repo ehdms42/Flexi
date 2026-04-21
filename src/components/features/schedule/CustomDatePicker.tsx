@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Pressable } from "react-native";
 
 import { colors } from "@constants/colors";
 import { fontFamily } from "@constants/typography";
@@ -92,9 +92,8 @@ export default function CustomDatePicker({
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
-      <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onDismiss}>
-        <TouchableOpacity activeOpacity={1} onPress={() => {}}>
-          <View style={styles.card}>
+      <Pressable style={styles.overlay} onPress={onDismiss}>
+        <View style={styles.card} onStartShouldSetResponder={() => true}>
             <View style={styles.header}>
               <Text style={styles.monthTitle}>
                 {viewYear}년 {viewMonth + 1}월
@@ -148,8 +147,7 @@ export default function CustomDatePicker({
               })}
             </View>
           </View>
-        </TouchableOpacity>
-      </TouchableOpacity>
+      </Pressable>
     </Modal>
   );
 }
