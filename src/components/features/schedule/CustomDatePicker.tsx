@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 
 import { colors } from "@constants/colors";
@@ -46,6 +46,14 @@ export default function CustomDatePicker({
   const [viewYear, setViewYear] = useState(value.getFullYear());
   const [viewMonth, setViewMonth] = useState(value.getMonth());
   const [selected, setSelected] = useState<Date>(value);
+
+  useEffect(() => {
+    if (visible) {
+      setViewYear(value.getFullYear());
+      setViewMonth(value.getMonth());
+      setSelected(value);
+    }
+  }, [visible]);
 
   const goToPrevMonth = useCallback(
     () =>
