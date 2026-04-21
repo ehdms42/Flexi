@@ -30,10 +30,32 @@ import TimelineView from '@components/features/schedule/TimelineView';
 import NewScheduleSheet from '@components/features/schedule/NewScheduleSheet';
 import { colors } from '@constants/colors';
 import { fontFamily, typography } from '@constants/typography';
-import { MOCK_WEEK_DATES, MOCK_SCHEDULES } from '@/mocks/schedule';
+import { MOCK_SCHEDULES } from '@/mocks/schedule';
+import { WeekDay } from '@/types/schedule';
+
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+const DAY_NAMES = ['월', '화', '수', '목', '금', '토', '일'] as const;
+
+const getWeekDates = (date: Date): WeekDay[] => {
+  const dow = date.getDay();
+  const monday = new Date(date);
+  monday.setDate(date.getDate() - (dow === 0 ? 6 : dow - 1));
+  return DAY_NAMES.map((day, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return { date: d.getDate(), day };
+  });
+};
+
+const today = new Date();
 
 export default function HomeScreen() {
-  const [selectedDate, setSelectedDate] = useState(17);
+  const [selectedDate, setSelectedDate] = useState(today.getDate());
+  const [weekDates] = useState<WeekDay[]>(() => getWeekDates(today));
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const newScheduleSheetRef = useRef<BottomSheet>(null);
 
@@ -77,7 +99,7 @@ export default function HomeScreen() {
           {/* April + 지연 텍스트 */}
           <View style={styles.monthArea}>
             <View style={styles.monthRow}>
-              <Text style={styles.monthText}>April</Text>
+              <Text style={styles.monthText}>{MONTH_NAMES[today.getMonth()]}</Text>
               <ChevronDown width={20} height={20} />
             </View>
             <Text style={styles.delayText}>
@@ -90,7 +112,7 @@ export default function HomeScreen() {
           <WeeklyCalendar
             selectedDate={selectedDate}
             onSelectDate={setSelectedDate}
-            weekDates={MOCK_WEEK_DATES}
+            weekDates={weekDates}
           />
 
           {/* 타임라인 */}
