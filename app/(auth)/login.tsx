@@ -17,9 +17,9 @@ import { fontFamily, typography } from "@constants/typography";
 import { login } from "@api/users";
 import { googleLogin } from "@api/auth";
 import { useAuthStore } from "@stores/authStore";
-import GoogleIcon from "../../assets/icons/google-icon.svg";
-import OpenEyes from "../../assets/icons/open-eyes.svg";
-import CloseEyes from "../../assets/icons/close-eyes.svg";
+import GoogleIcon from "@assets/icons/google-icon.svg";
+import OpenEyes from "@assets/icons/open-eyes.svg";
+import CloseEyes from "@assets/icons/close-eyes.svg";
 
 export default function LoginScreen() {
   const router = useRouter();
