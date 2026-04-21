@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useAuthStore } from "@stores/authStore";
 
-const BASE_URL = "http://localhost:8080";
+// TODO: Sprint 2 — EXPO_PUBLIC_API_URL 환경변수로 교체 (Android 에뮬레이터: 10.0.2.2, 실기기: LAN IP, 배포: 실 서버 URL)
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8080";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
