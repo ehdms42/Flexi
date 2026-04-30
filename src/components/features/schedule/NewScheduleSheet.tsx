@@ -29,11 +29,9 @@ const PRIORITY_INDEX_TO_API: Record<PriorityIndex, TaskPriority> = {
   3: "HIGHEST",
 };
 
-const toApiDate = (d: Date) =>
-  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const toApiDate = (d: Date): number[] => [d.getFullYear(), d.getMonth() + 1, d.getDate()];
 
-const toApiTime = (d: Date) =>
-  `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:00`;
+const toApiTime = (d: Date): number[] => [d.getHours(), d.getMinutes()];
 
 export default function NewScheduleSheet({ bottomSheetRef, onClose }: NewScheduleSheetProps) {
   const close = () => bottomSheetRef.current?.close();

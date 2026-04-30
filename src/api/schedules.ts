@@ -4,10 +4,10 @@ import { ApiResponse } from "@/types/api";
 export type TaskPriority = "HOLD" | "NORMAL" | "HIGH" | "HIGHEST";
 
 export interface CreateTaskRequest {
-  date: string;
+  date: number[];
   title: string;
-  startTime: string;
-  endTime: string;
+  startTime: number[];
+  endTime: number[];
   priority: TaskPriority;
 }
 
