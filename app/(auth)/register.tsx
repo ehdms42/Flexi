@@ -75,16 +75,16 @@ export default function RegisterScreen() {
 
   const validatePassword = (value: string) => {
     if (value.length < 6 || value.length > 20) {
-      return "6~20자/영문 대문자, 소문자, 숫자, 특수문자(!@#$%^&*) 중 2가지 이상 조합";
+      return "6~20자/영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합";
     }
     if (!/^[a-zA-Z0-9!@#$%^&*]+$/.test(value)) {
-      return "6~20자/영문 대문자, 소문자, 숫자, 특수문자(!@#$%^&*) 중 2가지 이상 조합";
+      return "6~20자/영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합";
     }
     const typeCount = [/[A-Z]/, /[a-z]/, /[0-9]/, /[!@#$%^&*]/].filter((r) =>
       r.test(value)
     ).length;
     if (typeCount < 2) {
-      return "6~20자/영문 대문자, 소문자, 숫자, 특수문자(!@#$%^&*) 중 2가지 이상 조합";
+      return "6~20자/영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합";
     }
     return "";
   };
@@ -242,7 +242,7 @@ export default function RegisterScreen() {
             </View>
           ) : (
             <Text style={styles.hintText}>
-              6~20자/영문 대문자, 소문자, 숫자, 특수문자(!@#$%^&*) 중 2가지 이상 조합
+              6~20자/영문 대문자, 소문자, 숫자, 특수문자 중 2가지 이상 조합
             </Text>
           )}
         </View>
